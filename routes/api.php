@@ -16,7 +16,7 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
 
     Route::post('login', 'UserController@login');
     Route::post('register', 'UserController@register');
-    /*update test*/
+    /*update test123*/
     Route::group(['middleware' => ['jwt_auth', 'RefreshToken']], function () {
         /*  user  */
         Route::get('getUserData', 'UserController@getUserData');
