@@ -26,16 +26,16 @@ class ChatController extends Controller
                 'chat_name' => 'required|string ',
             ],
             [
-                'chat_name.required' => '清輸入聊天室名稱',
+                'chat_name.required' => '請輸入聊天室名稱',
                 'chat_name.string' => '聊天室名稱須為字串'
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->chatService->createChat($chatData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -57,11 +57,11 @@ class ChatController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->chatService->getChat($chatData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -83,14 +83,14 @@ class ChatController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
         $file = $request->file('profile_pic');
         if (!$file->isValid()) {
-            return response()->json(['errorMessage' => '保存圖片失敗'], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json(['保存圖片失敗'], 400, [], JSON_UNESCAPED_UNICODE);
         }
         $newFileName = $this->chatService->updateChatProfilePic($file, $request->input('chat_id'));
         if ($newFileName == '0')
-            return response()->json(['errorMessage' => '檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json(['檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json($newFileName, 200, [], JSON_UNESCAPED_UNICODE);
     }

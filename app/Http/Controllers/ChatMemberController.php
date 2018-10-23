@@ -30,11 +30,11 @@ class ChatMemberController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->addCM($chatMemberData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -56,11 +56,11 @@ class ChatMemberController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->inviteCM($chatMemberData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -83,11 +83,11 @@ class ChatMemberController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->acceptCM($chatMemberData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -110,11 +110,11 @@ class ChatMemberController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->refuseCM($chatMemberData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -134,11 +134,11 @@ class ChatMemberController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->quitChat($chatMemberData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400);
+            return response()->json([$result], 400);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -158,7 +158,7 @@ class ChatMemberController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->getCM($chatMemberData);
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
@@ -179,11 +179,11 @@ class ChatMemberController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json([$objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->getUncheckCM($chatMemberData);
-        if ($results = '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+        if (is_string($result))
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
 
@@ -200,7 +200,7 @@ class ChatMemberController extends Controller
             [], []
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->getMyInvite($chatMemberData);
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
@@ -216,7 +216,7 @@ class ChatMemberController extends Controller
             [], []
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->ChatMemberService->getMyChat($chatMemberData);
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);

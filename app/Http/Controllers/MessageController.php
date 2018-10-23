@@ -35,11 +35,11 @@ class MessageController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->messageService->sendMessage($messageData);
         if ($result != '')
-            return response()->json(['errorMessage' => $result], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($result, 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
 
@@ -60,7 +60,7 @@ class MessageController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->messageService->getMessage($messageData);
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
@@ -84,7 +84,7 @@ class MessageController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
         //圖片陣列內圖片驗證
         $imageRules = array(
             'Image' => 'mimes:jpeg,bmp,png'
@@ -97,15 +97,15 @@ class MessageController extends Controller
             $images = array('Image' => $image);
             $imageValidator = Validator::make($images, $imageRules, $imageMessage);
             if ($imageValidator->fails()) {
-                return response()->json(['errorMessage' => $imageValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+                return response()->json($imageValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
             }
         }
         $files = $input['Image'];
         $newFileName = $this->messageService->uploadImg($files);
         if ($newFileName == '002錯誤')
-            return response()->json(['errorMessage' => '002錯誤'], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json(['002錯誤'], 400, [], JSON_UNESCAPED_UNICODE);
         else if ($newFileName == '0')
-            return response()->json(['errorMessage' => '檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json(['檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json($newFileName, 200, [], JSON_UNESCAPED_UNICODE);
     }

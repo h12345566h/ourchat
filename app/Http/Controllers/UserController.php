@@ -53,7 +53,7 @@ class UserController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
         $this->userService->register($postData);
         return response()->json('註冊成功', 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -75,7 +75,7 @@ class UserController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' => $objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
         $resMessage = $this->userService->login($postData);
         if ($resMessage != '')
             return response()->json([$resMessage], 400);
@@ -112,14 +112,14 @@ class UserController extends Controller
             ]
         );
         if ($objValidator->fails())
-            return response()->json(['errorMessage' =>$objValidator->errors()->all()], 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
         $file = $request->file('profile_pic');
         if (!$file->isValid()) {
-            return response()->json('保存圖片失敗', 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json(['保存圖片失敗'], 400, [], JSON_UNESCAPED_UNICODE);
         }
         $newFileName = $this->userService->updateProfilePic($file, $request->input('account'));
         if ($newFileName == '0')
-            return response()->json('檔名過長', 400, [], JSON_UNESCAPED_UNICODE);
+            return response()->json(['檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json($newFileName, 200, [], JSON_UNESCAPED_UNICODE);
     }
