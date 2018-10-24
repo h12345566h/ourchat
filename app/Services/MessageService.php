@@ -47,6 +47,9 @@ class MessageService
                     ->with(['user' => function ($query) {
                         $query->select(['account', 'name', 'profile_pic']);
                     }])
+                    ->with(['chat' => function ($query) {
+                        $query->select(['chat_id', 'chat_name', 'creator', 'profile_pic']);
+                    }])
                     ->get();
                 return $MessageArr;
             } else {
@@ -55,6 +58,9 @@ class MessageService
                     ->take(15)
                     ->with(['user' => function ($query) {
                         $query->select(['account', 'name', 'profile_pic']);
+                    }])
+                    ->with(['chat' => function ($query) {
+                        $query->select(['chat_id', 'chat_name', 'creator', 'profile_pic']);
                     }])
                     ->get();
                 return $MessageArr;

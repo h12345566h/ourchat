@@ -179,7 +179,10 @@ class ChatMemberService
     {
         $CMList = ChatMemberEloquent::
         where('account', $chatMemberData['account'])
-            ->where('status', 2)->get();
+            ->where('status', 2)
+            ->with(['chat' => function ($query) {
+                $query->select(['chat_id', 'chat_name', 'creator', 'profile_pic']);
+            }])->get();
         return $CMList;
     }
 }
