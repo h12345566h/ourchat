@@ -24,13 +24,18 @@ class Chat extends Model
      * @var array
      */
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'account', 'creator');
+    }
+
     public function message()
     {
-        return $this->hasMany(Message::class, 'chat_id');
+        return $this->hasMany(Message::class, 'chat_id', 'chat_id');
     }
 
     public function chatmember()
     {
-        return $this->hasMany(chatmember::class, 'chat_id');
+        return $this->hasMany(chatmember::class, 'chat_id', 'chat_id');
     }
 }

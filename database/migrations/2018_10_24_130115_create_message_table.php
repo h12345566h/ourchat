@@ -19,11 +19,12 @@ class CreateMessageTable extends Migration
             $table->unsignedInteger('type');
             $table->string('account', 20);
             $table->unsignedInteger('chat_id');
+            $table->unsignedInteger('cm_id');
             $table->dateTime('created_at');
 
             $table->foreign('account')->references('account')->on('user');
             $table->foreign('chat_id')->references('chat_id')->on('chat');
-
+            $table->foreign('cm_id')->references('cm_id')->on('chatmember');
         });
     }
 

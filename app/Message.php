@@ -35,7 +35,7 @@ class Message extends Model
      * @var array
      */
     protected $fillable = [
-        'account', 'message', 'type', 'chat_id'
+        'account', 'message', 'type', 'chat_id','cm_id'
     ];
 
     /**
@@ -46,12 +46,16 @@ class Message extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'account');
+        return $this->belongsTo(User::class, 'account','account');
     }
 
     public function chat()
     {
-        return $this->belongsTo(Chat::class, 'chat_id');
+        return $this->belongsTo(Chat::class, 'chat_id','chat_id');
     }
 
+    public function chatmember()
+    {
+        return $this->belongsTo(ChatMember::class, 'cm_id','cm_id');
+    }
 }

@@ -60,10 +60,7 @@ class ChatController extends Controller
             return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
         $result = $this->chatService->getChat($chatData);
-        if ($result != '')
-            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
-        else
-            return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
+        return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
 

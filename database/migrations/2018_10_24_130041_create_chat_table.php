@@ -15,11 +15,11 @@ class CreateChatTable extends Migration
     {
         Schema::create('chat', function (Blueprint $table) {
             $table->increments('chat_id');
-            $table->string ('chat_name',50);
-            $table->string ('creator',20);
+            $table->string('chat_name', 50);
+            $table->string('creator', 20);
             $table->dateTime('created_at');
             $table->string('profile_pic', 200)->nullable();
-
+            $table->foreign('creator')->references('account')->on('user');
         });
     }
 

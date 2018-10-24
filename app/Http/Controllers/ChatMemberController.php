@@ -195,13 +195,6 @@ class ChatMemberController extends Controller
     public function getMyInvite(Request $request)
     {
         $chatMemberData = $request->all();
-        $objValidator = Validator::make(
-            $chatMemberData,
-            [], []
-        );
-        if ($objValidator->fails())
-            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
-
         $result = $this->ChatMemberService->getMyInvite($chatMemberData);
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
     }
@@ -211,13 +204,6 @@ class ChatMemberController extends Controller
     public function getMyChat(Request $request)
     {
         $chatMemberData = $request->all();
-        $objValidator = Validator::make(
-            $chatMemberData,
-            [], []
-        );
-        if ($objValidator->fails())
-            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
-
         $result = $this->ChatMemberService->getMyChat($chatMemberData);
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
     }

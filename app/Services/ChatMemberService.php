@@ -25,9 +25,20 @@ class ChatMemberService
         if ($ChatCheck) {
             $accCheck = UserEloquent::find($chatMemberData['account']);
             if ($accCheck) {
-                $chatMemberData['status'] = 0;
-                ChatMemberEloquent::create($chatMemberData);
-                return '';
+                $CMCheck = ChatMemberEloquent::where('account', $chatMemberData['account'])
+                    ->where('chat_id', $chatMemberData['chat_id'])->first();
+                if (!$CMCheck) {
+                    $chatMemberData['status'] = 0;
+                    ChatMemberEloquent::create($chatMemberData);
+                    return '';
+                } else {
+                    if ($CMCheck->status == 0)
+                        return '該帳號已申請加入';
+                    if ($CMCheck->status == 1)
+                        return '該帳號已在邀請名單中';
+                    if ($CMCheck->status == 2)
+                        return '該帳號已在群組中';
+                }
             } else {
                 return '無此使用者';
             }
@@ -42,7 +53,7 @@ class ChatMemberService
         $invCheck = ChatMemberEloquent::
         where('chat_id', $chatMemberData['chat_id'])->
         where('account', $chatMemberData['account'])->
-        where('status', '=', 2)->first();
+        where('status', 2)->first();
         if ($invCheck) {
             //被邀請人UserCheck
             $accCheck = UserEloquent::find($chatMemberData['inv_account']);
@@ -148,7 +159,11 @@ class ChatMemberService
 
     public function getCM($chatMemberData)
     {
-        $CMList = ChatMemberEloquent:: where('chat_id', $chatMemberData['chat_id'])->get();
+        $CMList = ChatMemberEloquent:: where('chat_id', $chatMemberData['chat_id'])
+            ->with(['user' => function ($query) {
+                $query->select(['account', 'name', 'profile_pic']);
+            }])
+            ->get();
         return $CMList;
     }
 
@@ -159,8 +174,10 @@ class ChatMemberService
             ->where('status', 2)->first();
         if ($CMCheck) {
             $CMList = ChatMemberEloquent:: where('chat_id', $chatMemberData['chat_id'])
-                ->where('account', $chatMemberData['account'])
-                ->where('status', 0)->get();
+                ->where('status', 0)
+                ->with(['user' => function ($query) {
+                    $query->select(['account', 'name', 'profile_pic']);
+                }])->get();
             return $CMList;
         } else {
             return '您不是該群組成員';
@@ -169,20 +186,23 @@ class ChatMemberService
 
     public function getMyInvite($chatMemberData)
     {
-        $CMList = ChatMemberEloquent::
-        where('account', $chatMemberData['account'])
-            ->where('status', 1)->get();
-        return $CMList;
+        $CM_Chat = ChatMemberEloquent::
+        join('chat', 'chatmember.chat_id', '=', 'chat.chat_id')
+            ->where('chatmember.account', $chatMemberData['account'])
+            ->where('chatmember.status', 1)
+            ->select('chat.chat_id','chat.chat_name','chat.profile_pic')
+            ->get();
+        return $CM_Chat;
     }
 
     public function getMyChat($chatMemberData)
     {
-        $CMList = ChatMemberEloquent::
-        where('account', $chatMemberData['account'])
-            ->where('status', 2)
-            ->with(['chat' => function ($query) {
-                $query->select(['chat_id', 'chat_name', 'creator', 'profile_pic']);
-            }])->get();
-        return $CMList;
+        $CM_Chat = ChatMemberEloquent::
+        join('chat', 'chatmember.chat_id', '=', 'chat.chat_id')
+            ->where('chatmember.account', $chatMemberData['account'])
+            ->where('chatmember.status', 2)
+            ->select('chat.chat_id','chat.chat_name','chat.profile_pic')
+            ->get();
+        return $CM_Chat;
     }
 }
