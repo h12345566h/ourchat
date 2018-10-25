@@ -18,6 +18,7 @@ class CreateMessageTable extends Migration
             $table->string('message', 3000);
             $table->unsignedInteger('type');
             $table->string('account', 20);
+            $table->string('name', 20);
             $table->unsignedInteger('chat_id');
             $table->unsignedInteger('cm_id');
             $table->dateTime('created_at');

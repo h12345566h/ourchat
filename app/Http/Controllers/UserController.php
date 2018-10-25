@@ -57,7 +57,7 @@ class UserController extends Controller
         $this->userService->register($postData);
         return response()->json('註冊成功', 200, [], JSON_UNESCAPED_UNICODE);
     }
-//endregion
+    //endregion
 
     // region 登入
     public function login(Request $request)
@@ -81,7 +81,7 @@ class UserController extends Controller
             return response()->json([$resMessage], 400);
         return response()->json(['token' => Auth::guard()->attempt($postData)], 200, [], JSON_UNESCAPED_UNICODE);
     }
-//endregion
+    //endregion
 
     // region GET個人資料
     public function getUserData()
@@ -122,6 +122,36 @@ class UserController extends Controller
             return response()->json(['檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json($newFileName, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+    //endregion
+
+    //region 帳號搜尋
+    public function searchUser(Request $request)
+    {
+        $userData = $request->all();
+        $objValidator = Validator::make(
+            $userData,
+            [
+                'keyword' => 'string|required',
+            ],
+            [
+                'keyword.string' => '關鍵字須為字串',
+                'keyword.required' => '請輸入關鍵字'
+            ]
+        );
+        if ($objValidator->fails())
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
+
+        $result = $this->userService->searchUser($userData);
+        return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
+    }
+    //endregion
+
+    // region 測試 中介層
+    public function middlewareTest(Request $request)
+    {
+        $postData = $request->all();
+        return response()->json([$postData], 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
 

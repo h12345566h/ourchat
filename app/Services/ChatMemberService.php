@@ -190,19 +190,21 @@ class ChatMemberService
         join('chat', 'chatmember.chat_id', '=', 'chat.chat_id')
             ->where('chatmember.account', $chatMemberData['account'])
             ->where('chatmember.status', 1)
-            ->select('chat.chat_id','chat.chat_name','chat.profile_pic')
+            ->select('chat.chat_id', 'chat.chat_name', 'chat.profile_pic')
             ->get();
         return $CM_Chat;
     }
 
     public function getMyChat($chatMemberData)
     {
-        $CM_Chat = ChatMemberEloquent::
-        join('chat', 'chatmember.chat_id', '=', 'chat.chat_id')
-            ->where('chatmember.account', $chatMemberData['account'])
-            ->where('chatmember.status', 2)
-            ->select('chat.chat_id','chat.chat_name','chat.profile_pic')
-            ->get();
-        return $CM_Chat;
+        $CMList = ChatMemberEloquent:: where('account', $chatMemberData['account'])
+            ->with(['chat' => function ($query) {
+                $query->select(['chat_id', 'chat_name', 'profile_pic']);
+            }])
+            ->with(['message' => function ($query) {
+                $query->orderBy('created_at', 'desc')
+                    ->select(['cm_id', 'message', 'name', 'type', 'created_at'])->first();
+            }])->get();
+        return $CMList;
     }
 }

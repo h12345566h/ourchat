@@ -10,6 +10,7 @@ namespace App\Services;
 
 use App\Message as MessageEloquent;
 use App\ChatMember as ChatMemberEloquent;
+use App\User as UserEloquent;
 use Image;
 use Storage;
 
@@ -22,7 +23,12 @@ class MessageService
             ->where('chat_id', $messageData['chat_id'])
             ->where('status', 2)->first();
         if ($CMCheck) {
-            if (!empty($messageData['message'])) {
+            if (trim($messageData['message']) == "") {
+                return '請輸入訊息';
+            } else {
+                $User  =UserEloquent::find($messageData['account']);
+                $messageData['name'] = $User->name;
+                $messageData['cm_id'] = $CMCheck->cm_id;
                 MessageEloquent::create($messageData);
                 //推撥
                 return '';
@@ -45,10 +51,10 @@ class MessageService
                     ->orderByDesc('created_at')
                     ->take(15)
                     ->with(['user' => function ($query) {
-                        $query->select(['account', 'name', 'profile_pic']);
+                        $query->select(['account', 'profile_pic']);
                     }])
                     ->with(['chat' => function ($query) {
-                        $query->select(['chat_id', 'chat_name', 'creator', 'profile_pic']);
+                        $query->select(['chat_id', 'chat_name', 'profile_pic']);
                     }])
                     ->get();
                 return $MessageArr;
@@ -60,7 +66,7 @@ class MessageService
                         $query->select(['account', 'name', 'profile_pic']);
                     }])
                     ->with(['chat' => function ($query) {
-                        $query->select(['chat_id', 'chat_name', 'creator', 'profile_pic']);
+                        $query->select(['chat_id', 'chat_name',  'profile_pic']);
                     }])
                     ->get();
                 return $MessageArr;
