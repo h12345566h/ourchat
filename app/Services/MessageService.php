@@ -26,8 +26,6 @@ class MessageService
             if (trim($messageData['message']) == "") {
                 return '請輸入訊息';
             } else {
-                $User  =UserEloquent::find($messageData['account']);
-                $messageData['name'] = $User->name;
                 $messageData['cm_id'] = $CMCheck->cm_id;
                 MessageEloquent::create($messageData);
                 //推撥
@@ -66,7 +64,7 @@ class MessageService
                         $query->select(['account', 'name', 'profile_pic']);
                     }])
                     ->with(['chat' => function ($query) {
-                        $query->select(['chat_id', 'chat_name',  'profile_pic']);
+                        $query->select(['chat_id', 'chat_name', 'profile_pic']);
                     }])
                     ->get();
                 return $MessageArr;

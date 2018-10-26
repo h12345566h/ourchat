@@ -35,7 +35,7 @@ class Message extends Model
      * @var array
      */
     protected $fillable = [
-        'account', 'message', 'type', 'chat_id','cm_id','name'
+        'account', 'message', 'type', 'chat_id','cm_id'
     ];
 
     /**

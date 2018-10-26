@@ -197,14 +197,17 @@ class ChatMemberService
 
     public function getMyChat($chatMemberData)
     {
-        $CMList = ChatMemberEloquent:: where('account', $chatMemberData['account'])
-            ->with(['chat' => function ($query) {
-                $query->select(['chat_id', 'chat_name', 'profile_pic']);
-            }])
+        $CMList = ChatMemberEloquent::where('account', $chatMemberData['account'])->select('chat_id')->get();
+
+        $DataList = ChatEloquent:: whereIn('chat_id', $CMList)
             ->with(['message' => function ($query) {
                 $query->orderBy('created_at', 'desc')
-                    ->select(['cm_id', 'message', 'name', 'type', 'created_at'])->first();
-            }])->get();
-        return $CMList;
+                    ->select(['cm_id', 'message', 'type', 'created_at'])->first();
+//                    ->with(['user' => function ($query) {
+//                        $query->select(['account', 'name', 'profile_pic']);
+//                    }]);
+            }])
+            ->get();
+        return $DataList;
     }
 }
