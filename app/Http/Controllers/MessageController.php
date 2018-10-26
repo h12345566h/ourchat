@@ -23,13 +23,13 @@ class MessageController extends Controller
         $objValidator = Validator::make(
             $messageData,
             [
-                'message' => 'required|max:190',
+                'content' => 'required|max:190',
                 'chat_id' => 'required|integer',
                 'type' => 'required|integer',
             ],
             [
-                'message.max' => '訊息不可超過190字',
-                'message.required' => '請輸入訊息',
+                'content.max' => '訊息不可超過190字',
+                'content.required' => '請輸入訊息',
                 'chat_id.*' => '001錯誤',
                 'type.*' => '002錯誤',
             ]

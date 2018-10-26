@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    protected $table = 'chat';
+    protected $table = 'chats';
     protected $primaryKey = 'chat_id';
     const UPDATED_AT = null;
     /**
@@ -29,12 +29,12 @@ class Chat extends Model
         return $this->belongsTo(User::class, 'account', 'creator');
     }
 
-    public function message()
+    public function messages()
     {
         return $this->hasMany(Message::class, 'chat_id', 'chat_id');
     }
 
-    public function chatmember()
+    public function chatMembers()
     {
         return $this->hasMany(chatmember::class, 'chat_id', 'chat_id');
     }

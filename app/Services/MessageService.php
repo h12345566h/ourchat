@@ -23,10 +23,9 @@ class MessageService
             ->where('chat_id', $messageData['chat_id'])
             ->where('status', 2)->first();
         if ($CMCheck) {
-            if (trim($messageData['message']) == "") {
+            if (trim($messageData['content']) == "") {
                 return '請輸入訊息';
             } else {
-                $messageData['cm_id'] = $CMCheck->cm_id;
                 MessageEloquent::create($messageData);
                 //推撥
                 return '';
