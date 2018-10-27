@@ -7,6 +7,8 @@ use App\Services\UserService;
 use Auth;
 use Validator;
 
+error_reporting(0);
+
 class UserController extends Controller
 {
     public $userService;
@@ -59,6 +61,29 @@ class UserController extends Controller
     }
     //endregion
 
+    //region 修改
+    public function editUser(Request $request)
+    {
+        $postData = $request->all();
+        $objValidator = Validator::make(
+            $postData,
+            [
+                'name' => 'required|max:20',
+                'email' => 'required|email|max:50'
+            ],
+            [
+                'email.required' => '請輸入信箱',
+                'email.email' => '信箱格式錯誤',
+                'email.max' => '信箱不可超過 50 字元'
+            ]
+        );
+        if ($objValidator->fails())
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
+        $this->userService->editUser($postData);
+        return response()->json('修改成功', 200, [], JSON_UNESCAPED_UNICODE);
+    }
+    //endregion
+
     // region 登入
     public function login(Request $request)
     {
@@ -80,6 +105,41 @@ class UserController extends Controller
         if ($resMessage != '')
             return response()->json([$resMessage], 400);
         return response()->json(['token' => Auth::guard()->attempt($postData)], 200, [], JSON_UNESCAPED_UNICODE);
+    }
+    //endregion
+
+    // region 修改密碼
+    public function passwordChange(Request $request)
+    {
+        $postData = $request->all();
+        $objValidator = Validator::make(
+            $postData,
+            [
+                'account' => 'required',
+                'old_password' => 'required',
+                'new_password' => 'required',
+                'new_password2' => 'required'
+            ],
+            [
+                'account.required' => '請輸入帳號',
+                'old_password.required' => '請輸入舊密碼',
+                'new_password.required' => '請輸入新密碼',
+                'new_password2.required' => '請輸入確認新密碼'
+            ]
+        );
+        if ($objValidator->fails())
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
+        $resMessage = $this->userService->passwordChange($postData);
+        if ($resMessage != '') {
+            return response()->json([$resMessage], 400);
+        } else {
+            Auth::guard()->logout();
+            $newpostData['account'] = $postData['account'];
+            $newpostData['password'] = $postData['new_password'];
+
+            return response()->json(['token' => Auth::guard()->attempt($newpostData)], 200, [], JSON_UNESCAPED_UNICODE);
+        }
+
     }
     //endregion
 
