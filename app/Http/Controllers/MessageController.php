@@ -54,9 +54,11 @@ class MessageController extends Controller
             $messageData,
             [
                 'chat_id' => 'required|integer',
+                'message_id' => 'integer',
             ],
             [
                 'chat_id.*' => '001錯誤',
+                'message_id.*' => '002錯誤',
             ]
         );
         if ($objValidator->fails())

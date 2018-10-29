@@ -1,19 +1,12 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 2018/10/3
- * Time: 15:31
- */
 
 namespace App\Services;
 
 use App\Message as MessageEloquent;
 use App\ChatMember as ChatMemberEloquent;
-use App\User as UserEloquent;
+use DB;
 use Image;
 use Storage;
-
 
 class MessageService
 {
@@ -42,26 +35,14 @@ class MessageService
             ->where('chat_id', $messageData['chat_id'])
             ->where('status', 2)->first();
         if ($CMCheck) {
-            if ($messageData['message_id']) {
-                $MessageArr = MessageEloquent::where('chat_id', $messageData['chat_id'])
-                    ->where('message_id', '<', $messageData['message_id'])
-                    ->orderByDesc('created_at')
-                    ->take(15)
-                    ->with(['user' => function ($query) {
-                        $query->select(['account', 'profile_pic']);
-                    }])
-                    ->get();
-                return $MessageArr;
-            } else {
-                $MessageArr = MessageEloquent::where('chat_id', $messageData['chat_id'])
-                    ->orderByDesc('created_at')
-                    ->take(15)
-                    ->with(['user' => function ($query) {
-                        $query->select(['account', 'name', 'profile_pic']);
-                    }])
-                    ->get();
-                return $MessageArr;
-            }
+            $sql = DB::table('messages')->where('chat_id', $messageData['chat_id'])
+                ->select('messages.message_id', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'user.name', 'user.profile_pic')
+                ->join('user', 'messages.account', '=', 'user.account');
+
+            if (array_key_exists('message_id', $messageData))
+                $sql->where('message_id', '<', $messageData['message_id']);
+
+            return $sql->get();
 
         } else {
             return '此聊天室無此使用者';
