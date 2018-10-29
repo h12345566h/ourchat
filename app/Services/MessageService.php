@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Services\BaseService as BaseService;
 use App\Message as MessageEloquent;
 use App\ChatMember as ChatMemberEloquent;
 use DB;
 use Image;
 use Storage;
+
 
 class MessageService
 {
@@ -31,6 +33,8 @@ class MessageService
 
     public function getMessage($messageData)
     {
+        $this->baseService = new BaseService();
+
         $CMCheck = ChatMemberEloquent::where('account', $messageData['account'])
             ->where('chat_id', $messageData['chat_id'])
             ->where('status', 2)->first();
@@ -41,9 +45,15 @@ class MessageService
 
             if (array_key_exists('message_id', $messageData))
                 $sql->where('message_id', '<', $messageData['message_id']);
+            $Data = $sql->get();
 
-            return $sql->get();
+            foreach ($Data as $item) {
+                $timeDistance = $this->baseService->timeDistance($item->created_at);
+                $item->context = $timeDistance;
 
+            }
+
+            return $Data;
         } else {
             return '此聊天室無此使用者';
         }
