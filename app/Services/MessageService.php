@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Services\EchoTokenService as EchoTokenService;
 use App\Services\BaseService as BaseService;
+use App\Chat as ChatEloquent;
 use App\Message as MessageEloquent;
+use App\User as UserEloquent;
 use App\ChatMember as ChatMemberEloquent;
+use App\User;
 use DB;
 use Image;
 use Storage;
@@ -12,6 +16,16 @@ use Storage;
 
 class MessageService
 {
+    public $echoTokenService;
+    public $baseService;
+
+    public function __construct()
+    {
+        $this->echoTokenService = new EchoTokenService();
+        $this->baseService = new BaseService();
+    }
+
+
     public function sendMessage($messageData)
     {
         $CMCheck = ChatMemberEloquent::where('account', $messageData['account'])
@@ -21,9 +35,31 @@ class MessageService
             if (trim($messageData['content']) == "") {
                 return '請輸入訊息';
             } else {
-                MessageEloquent::create($messageData);
+                $message = MessageEloquent::create($messageData);
+
                 //推撥
-                return '';
+                $getUser = ChatMemberEloquent::where('chat_id', $messageData['chat_id'])
+                    ->whereNotIn('account', [$messageData['account']])->select('account')->get();
+                $plucked = $getUser->pluck('account')->toarray();
+
+                $userName = UserEloquent::find($messageData['account']);
+                $chatName = ChatEloquent::find($messageData['chat_id']);
+                $notice['account'] = $plucked;
+
+                $push_data['message_id'] = $message->message_id;
+                $push_data['content'] = $messageData['content'];
+                $push_data['type'] = $messageData['type'];
+                $push_data['account'] = $messageData['account'];
+                $push_data['create_at'] = $this->baseService->timeDistance($message->create_at);
+                $push_data['name'] = $userName->name;
+                $push_data['profile_pic'] = $userName->profile_pic;
+                $push_data['chat_id'] = $messageData['chat_id'];
+
+                $notice['push_data'] = $push_data;
+                $notice['simple'] = $userName->name . '在' . $chatName->chat_name . ':' . $messageData['content'];
+                return $notice;
+                $this->echoTokenService->echo($notice);
+
             }
         } else {
             return '此聊天室無此使用者';
@@ -47,9 +83,8 @@ class MessageService
             $sql->orderBy('messages.message_id', 'desc');
             $Data = $sql->get();
 
-            $baseService = new BaseService();
             foreach ($Data as $item) {
-                $timeDistance = $baseService->timeDistance($item->created_at);
+                $timeDistance = $this->baseService->timeDistance($item->created_at);
                 $item->created_at = $timeDistance;
             }
 

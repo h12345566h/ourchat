@@ -18,7 +18,7 @@ class EchoTokenService
 
     public function getUserToken($account)
     {
-        $echoTokenArr = EchoTokenEloquent::where('account', $account)->get();
+        $echoTokenArr = EchoTokenEloquent::whereIn('account', $account)->get();
         return $echoTokenArr;
     }
 
@@ -56,7 +56,7 @@ class EchoTokenService
 
     public function echo($postData)
     {
-        $echoTokenArr = $this->echoTokenService->getUserToken($postData['account']);
+        $echoTokenArr = $this->getUserToken($postData['account']);
         $firebaseTokenList = "";
         $apnsTokenList = "";
         foreach ($echoTokenArr as $echoToken) {
@@ -67,14 +67,12 @@ class EchoTokenService
         }
         if (strlen($firebaseTokenList) > 0)
             $firebaseTokenList = substr($firebaseTokenList, 0, strlen($firebaseTokenList) - 1);
-
         if (strlen($apnsTokenList) > 0)
             $apnsTokenList = substr($apnsTokenList, 0, strlen($apnsTokenList) - 1);
-
         $client = new Client();
         try {
             $url = "http://localhost:8080/EchoServlet?to_account=" . $postData['account'] .
-                "&firebase_token_str=$firebaseTokenList" . "&apns_token_str=$apnsTokenList" . "&content=" . $postData['content'];
+                "&firebase_token_str=$firebaseTokenList" . "&apns_token_str=$apnsTokenList" . "&push_data=" . $postData['push_data'] . "&simple=" . $postData['simple'];
             $res = $client->request('GET', $url);
         } catch (GuzzleException $e) {
             return response()->json($e->getMessage(), 400);
