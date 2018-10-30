@@ -33,7 +33,6 @@ class MessageService
 
     public function getMessage($messageData)
     {
-        $this->baseService = new BaseService();
 
         $CMCheck = ChatMemberEloquent::where('account', $messageData['account'])
             ->where('chat_id', $messageData['chat_id'])
@@ -45,12 +44,13 @@ class MessageService
 
             if (array_key_exists('message_id', $messageData))
                 $sql->where('message_id', '<', $messageData['message_id']);
+            $sql->orderBy('messages.message_id', 'desc');
             $Data = $sql->get();
 
+            $baseService = new BaseService();
             foreach ($Data as $item) {
-                $timeDistance = $this->baseService->timeDistance($item->created_at);
-                $item->context = $timeDistance;
-
+                $timeDistance = $baseService->timeDistance($item->created_at);
+                $item->created_at = $timeDistance;
             }
 
             return $Data;

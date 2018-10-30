@@ -15,16 +15,16 @@ class BaseService
     public function timeDistance($time)
     {
         $delimiter = '-';
-        $now = Carbon::now('Asia/Taipei');
+        $now = Carbon::now();
 
         $Distance = strtotime($now) - strtotime($time);
 
         if ($Distance < 60) {
-            return $Distance + '秒前';
+            return $Distance . '秒前';
         } else if ($Distance < 3600) {
             return floor($Distance / 60) . '分鐘前';
         } else if ($Distance < 86400) {
-            return floor($Distance/3600) . '小時前';
+            return floor($Distance / 3600) . '小時前';
         } else if ($Distance < 5184000) {
             return floor($Distance / 86400) . '天前';
         } else {
