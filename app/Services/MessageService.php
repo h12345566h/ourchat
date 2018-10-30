@@ -81,7 +81,7 @@ class MessageService
             if (array_key_exists('message_id', $messageData))
                 $sql->where('message_id', '<', $messageData['message_id']);
             $sql->orderBy('messages.message_id', 'desc');
-            $Data = $sql->get();
+            $Data = $sql->take(10)->get();
 
             foreach ($Data as $item) {
                 $timeDistance = $this->baseService->timeDistance($item->created_at);
