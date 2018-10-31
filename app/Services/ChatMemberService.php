@@ -201,7 +201,8 @@ class ChatMemberService
         $DataList = DB::select("select chats.chat_id,chats.chat_name,chats.profile_pic as chat_profile_pic,messages.content,messages.type,messages.account,messages.created_at,user.name,user.profile_pic as user_profile_pic from chats " .
             "join messages on messages.message_id = (select message_id from messages where messages.chat_id = chats.chat_id order by created_at desc limit 1) " .
             "join user on messages.account = user.account " .
-            "where chats.chat_id in (select chat_id from chat_members where account = '" . $chatMemberData['account'] . "')");
+            "where chats.chat_id in (select chat_id from chat_members where account = '" . $chatMemberData['account'] . "') " .
+            "order by messages.created_at desc");
         return $DataList;
     }
 }

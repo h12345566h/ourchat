@@ -42,7 +42,6 @@ class MessageController extends Controller
             return response()->json($result, 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
-
     }
     //endregion
 

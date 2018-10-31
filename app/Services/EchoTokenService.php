@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: tsaiminyuan
- * Date: 2018/10/6
- * Time: 下午4:57
- */
 
 namespace App\Services;
 
@@ -14,8 +8,6 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class EchoTokenService
 {
-
-
     public function getUserToken($account)
     {
         $echoTokenArr = EchoTokenEloquent::whereIn('account', $account)->get();
@@ -51,8 +43,6 @@ class EchoTokenService
         $postData['token'] = $postData['new_token'];
         EchoTokenEloquent::create($postData);
     }
-
-    #endregion
 
     public function echo($postData)
     {
