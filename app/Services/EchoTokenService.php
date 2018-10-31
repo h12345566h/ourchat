@@ -2,12 +2,20 @@
 
 namespace App\Services;
 
+use App\Services\BaseService as BaseService;
 use App\EchoToken as EchoTokenEloquent;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
 class EchoTokenService
 {
+    public $baseService;
+
+    public function __construct()
+    {
+        $this->baseService = new BaseService();
+    }
+
     public function getUserToken($account)
     {
         $echoTokenArr = EchoTokenEloquent::whereIn('account', $account)->get();
@@ -59,10 +67,14 @@ class EchoTokenService
             $firebaseTokenList = substr($firebaseTokenList, 0, strlen($firebaseTokenList) - 1);
         if (strlen($apnsTokenList) > 0)
             $apnsTokenList = substr($apnsTokenList, 0, strlen($apnsTokenList) - 1);
+
+        $account_str = $this->baseService->json2String($postData['account']);
+        $push_data_str = $this->baseService->json2String($postData['push_data']);
+        $simple_str = $this->baseService->json2String($postData['simple']);
         $client = new Client();
         try {
-            $url = "http://localhost:8080/EchoServlet?to_account=" . $postData['account'] .
-                "&firebase_token_str=$firebaseTokenList" . "&apns_token_str=$apnsTokenList" . "&push_data=" . $postData['push_data'] . "&simple=" . $postData['simple'];
+            $url = "http://localhost:8080/EchoServlet?to_account=" . $account_str .
+                "&firebase_token_str=$firebaseTokenList" . "&apns_token_str=$apnsTokenList" . "&push_data=" . $push_data_str . "&simple=" . $simple_str;
             $res = $client->request('GET', $url);
         } catch (GuzzleException $e) {
             return response()->json($e->getMessage(), 400);

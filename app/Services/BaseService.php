@@ -43,11 +43,14 @@ class BaseService
                     return $carbonTime->month . '/' . $carbonTime->day . ' 下午 ' . ($carbonTime->hour - 12) . ':' . $carbonTime->minute;
                 }
             }
-
-
         }
     }
 
+
+    public function json2String($jsonData)
+    {
+        return json_encode($jsonData, JSON_FORCE_OBJECT);
+    }
 
 
 //        if ($Distance < 60) {

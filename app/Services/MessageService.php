@@ -57,8 +57,9 @@ class MessageService
 
                 $notice['push_data'] = $push_data;
                 $notice['simple'] = $userName->name . '在' . $chatName->chat_name . ':' . $messageData['content'];
-                return $notice;
-                $this->echoTokenService->echo($notice);
+
+
+                return $this->echoTokenService->echo($notice);
 
             }
         } else {
@@ -69,7 +70,6 @@ class MessageService
 
     public function getMessage($messageData)
     {
-
         $CMCheck = ChatMemberEloquent::where('account', $messageData['account'])
             ->where('chat_id', $messageData['chat_id'])
             ->where('status', 2)->first();
