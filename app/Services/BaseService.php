@@ -47,10 +47,10 @@ class BaseService
     }
 
 
-    public function json2String($jsonData)
-    {
-        return json_encode($jsonData, JSON_FORCE_OBJECT);
-    }
+//    public function json2String($jsonData)
+//    {
+//        return json_encode($jsonData, JSON_FORCE_OBJECT);
+//    }
 
 
 //        if ($Distance < 60) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\EchoTokenService;
 use Illuminate\Http\Request;
 use App\Services\UserService;
 use Auth;
@@ -151,8 +152,23 @@ class UserController extends Controller
     //endregion
 
     // region 登出
-    public function logout()
+    public function logout(Request $request)
     {
+        $postData = $request->all();
+        $objValidator = Validator::make(
+            $postData,
+            [
+                'echo_token' => 'required'
+            ],
+            [
+                'echo_token.required' => 'error'
+            ]
+        );
+        if ($objValidator->fails())
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
+
+        $echoTokenService = new EchoTokenService();
+        $echoTokenService->deleteEchoToken($postData);
         Auth::guard()->logout();
         return response()->json('登出成功', 200, [], JSON_UNESCAPED_UNICODE);
     }

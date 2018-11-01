@@ -50,17 +50,16 @@ class MessageService
                 $push_data['content'] = $messageData['content'];
                 $push_data['type'] = $messageData['type'];
                 $push_data['account'] = $messageData['account'];
-                $push_data['create_at'] = $this->baseService->timeDistance($message->create_at);
+                $push_data['created_at'] = $this->baseService->timeDistance($message->create_at);
                 $push_data['name'] = $userName->name;
                 $push_data['profile_pic'] = $userName->profile_pic;
                 $push_data['chat_id'] = $messageData['chat_id'];
 
                 $notice['push_data'] = $push_data;
                 $notice['simple'] = $userName->name . '在' . $chatName->chat_name . ':' . $messageData['content'];
-
-
-                return $this->echoTokenService->echo($notice);
-
+                //需做一些處理
+                $resData = $this->echoTokenService->echo($notice);
+                return $push_data;
             }
         } else {
             return '此聊天室無此使用者';
@@ -81,7 +80,7 @@ class MessageService
             if (array_key_exists('message_id', $messageData))
                 $sql->where('message_id', '<', $messageData['message_id']);
             $sql->orderBy('messages.message_id', 'desc');
-            $Data = $sql->take(10)->get();
+            $Data = $sql->take(30)->get();
 
             foreach ($Data as $item) {
                 $timeDistance = $this->baseService->timeDistance($item->created_at);

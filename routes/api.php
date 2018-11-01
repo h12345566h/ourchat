@@ -25,7 +25,7 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
 
         /*  user  */
         Route::get('getUserData', 'UserController@getUserData');
-        Route::get('logout', 'UserController@logout');
+        Route::post('logout', 'UserController@logout');
         Route::post('updateProfilePic', 'UserController@updateProfilePic');
         Route::get('searchUser', 'UserController@searchUser');
         Route::post('editUser', 'UserController@editUser');

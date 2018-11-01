@@ -25,9 +25,7 @@ class EchoTokenService
     public function createEchoToken($postData)
     {
         if (array_key_exists('old_token', $postData)) {
-            $oldToken = EchoTokenEloquent::where('token', $postData['old_token'])
-                ->where('type', $postData['type'])
-                ->first();
+            $oldToken = EchoTokenEloquent::where('token', $postData['old_token'])->first();
             if ($oldToken) {
                 if ($oldToken->account != $postData['account'])
                     $oldToken->account = $postData['account'];
@@ -36,9 +34,7 @@ class EchoTokenService
                 return;
             }
         } else {
-            $token = EchoTokenEloquent::where('token', $postData['new_token'])
-                ->where('type', $postData['type'])
-                ->first();
+            $token = EchoTokenEloquent::where('token', $postData['new_token'])->first();
             if ($token) {
                 if ($token->account != $postData['account']) {
                     $token->account = $postData['account'];
@@ -52,30 +48,46 @@ class EchoTokenService
         EchoTokenEloquent::create($postData);
     }
 
+    public function deleteEchoToken($postData)
+    {
+        $echoToken = EchoTokenEloquent::where('token', $postData['echo_token'])->first();
+        if ($echoToken)
+            $echoToken->delete();
+    }
+
     public function echo($postData)
     {
         $echoTokenArr = $this->getUserToken($postData['account']);
         $firebaseTokenList = "";
         $apnsTokenList = "";
+        $accountList = "";
         foreach ($echoTokenArr as $echoToken) {
             if ($echoToken['type'] == 1)
                 $firebaseTokenList .= $echoToken['token'] . ",";
             else
                 $apnsTokenList .= $echoToken['token'] . ",";
         }
+        foreach ($postData['account'] as $account) {
+            $accountList .= $account . ",";
+        }
         if (strlen($firebaseTokenList) > 0)
             $firebaseTokenList = substr($firebaseTokenList, 0, strlen($firebaseTokenList) - 1);
         if (strlen($apnsTokenList) > 0)
             $apnsTokenList = substr($apnsTokenList, 0, strlen($apnsTokenList) - 1);
+        if (strlen($accountList) > 0)
+            $accountList = substr($accountList, 0, strlen($accountList) - 1);
 
-        $account_str = $this->baseService->json2String($postData['account']);
-        $push_data_str = $this->baseService->json2String($postData['push_data']);
-        $simple_str = $this->baseService->json2String($postData['simple']);
         $client = new Client();
         try {
-            $url = "http://localhost:8080/EchoServlet?to_account=" . $account_str .
-                "&firebase_token_str=$firebaseTokenList" . "&apns_token_str=$apnsTokenList" . "&push_data=" . $push_data_str . "&simple=" . $simple_str;
-            $res = $client->request('GET', $url);
+            $res = $client->request('POST', "http://localhost:8080/EchoServlet", [
+                'form_params' => [
+                    'to_account' => $accountList,
+                    'firebase_token_str' => $firebaseTokenList,
+                    'apns_token_str' => $apnsTokenList,
+                    'push_data' => json_encode($postData['push_data']),
+                    'simple' => $postData['simple']
+                ]
+            ]);
         } catch (GuzzleException $e) {
             return response()->json($e->getMessage(), 400);
         }
