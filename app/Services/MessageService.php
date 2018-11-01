@@ -56,7 +56,11 @@ class MessageService
                 $push_data['chat_id'] = $messageData['chat_id'];
 
                 $notice['push_data'] = $push_data;
-                $notice['simple'] = $userName->name . '在' . $chatName->chat_name . ':' . $messageData['content'];
+                if (strlen($messageData['content']) > 16)
+                    $content = substr($messageData['content'], 0, 16) . "...";
+                else
+                    $content = $messageData['content'];
+                $notice['simple'] = $userName->name . ' 在 ' . $chatName->chat_name . '：' . $content;
                 //需做一些處理
                 $resData = $this->echoTokenService->echo($notice);
                 return $push_data;
