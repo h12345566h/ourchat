@@ -13,6 +13,7 @@ use App\Chat as ChatEloquent;
 use App\ChatMember as ChatMemberEloquent;
 use Image;
 use Storage;
+use DB;
 
 
 class ChatService
@@ -43,12 +44,15 @@ class ChatService
 
     public function getChat($chatData)
     {
-        $keyword = $chatData['keyword'];
-        $getChatData = ChatEloquent::where('chat_name', 'like', "%$keyword%")
-            ->orderByDesc('chat_id')
-            ->take(15)
-            ->get();
-        return $getChatData;
+        $keyword = '%' . $chatData['keyword'] . '%';
+
+        $DataList = DB::select(
+            "select 'chats.chat_id', 'chats.chat_name', 'chats.creator', 'chats.profile_pic as chat_profile_pic', 'user.name as creator_name', 'user.profile_pic as creator_profile_pic,', 'chat_members.status from chats' " .
+            "join user on chats.creator = user.account " .
+            "join chat_members on chats.chat_id = (select chat_id from chat_members where account = :account) " .
+            "where chats.chat_name like :keyword order by chats.chat_name desc ", ['account' => $chatData['account'],'keyword'=>$keyword]);
+
+        return $DataList;
     }
 
     public function updateChatProfilePic(\Illuminate\Http\UploadedFile $file, $chat_id)
