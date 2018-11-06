@@ -46,11 +46,15 @@ class ChatService
     {
         $keyword = '%' . $chatData['keyword'] . '%';
 
-        $DataList = DB::select(
-            "select 'chats.chat_id', 'chats.chat_name', 'chats.creator', 'chats.profile_pic as chat_profile_pic', 'user.name as creator_name', 'user.profile_pic as creator_profile_pic,', 'chat_members.status from chats' " .
-            "join user on chats.creator = user.account " .
-            "join chat_members on chats.chat_id = (select chat_id from chat_members where account = :account) " .
-            "where chats.chat_name like :keyword order by chats.chat_name desc ", ['account' => $chatData['account'],'keyword'=>$keyword]);
+        $DataList = DB::table('chats')->where('chats.chat_name', 'like', $keyword)
+            ->select('chats.chat_id', 'chats.chat_name', 'chats.creator', 'chats.profile_pic as chat_profile_pic', 'user.name as creator_name', 'user.profile_pic as creator_profile_pic', 'chat_members.status')
+            ->join('user', 'chats.creator', '=', 'user.account')
+            ->leftJoin('chat_members', function ($join) use ($chatData) {
+                $join->on('chat_members.chat_id', '=', 'chats.chat_id')
+                    ->where('chat_members.account', '=', $chatData['account']);
+            })
+            ->orderBy('chats.chat_id', 'desc')
+            ->get();
 
         return $DataList;
     }
