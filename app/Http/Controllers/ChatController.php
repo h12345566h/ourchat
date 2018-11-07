@@ -94,4 +94,32 @@ class ChatController extends Controller
             return response()->json($newFileName, 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
+
+
+    //region 修改聊天室
+    public function editChat(Request $request)
+    {
+        $chatData = $request->all();
+        $objValidator = Validator::make(
+            $chatData,
+            [
+                'chat_name' => 'required|string ',
+                'chat_id' => 'required|integer',
+            ],
+            [
+                'chat_id.*' => '001錯誤',
+                'chat_name.required' => '請輸入聊天室名稱',
+                'chat_name.string' => '聊天室名稱須為字串'
+            ]
+        );
+        if ($objValidator->fails())
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
+
+        $result = $this->chatService->editChat($chatData);
+        if ($result != '')
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
+        else
+            return response()->json('success', 200, [], JSON_UNESCAPED_UNICODE);
+    }
+    //endregion
 }

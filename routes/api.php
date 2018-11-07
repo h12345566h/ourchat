@@ -51,6 +51,7 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
         Route::post('createChat', 'ChatController@createChat');
         Route::get('getChat', 'ChatController@getChat');
         Route::post('updateChatProfilePic', 'ChatController@updateChatProfilePic');
+        Route::post('editChat', 'ChatController@editChat');
 
         /*  Echo  */
         Route::post('createEchoToken', 'EchoController@createEchoToken');

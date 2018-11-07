@@ -88,4 +88,20 @@ class ChatService
         }
 
     }
+
+    public function editChat($chatData)
+    {
+        $CMcheck = ChatMemberEloquent::where('account', $chatData['account'])
+            ->where('chat_id', $chatData['chat_id'])
+            ->where('status', 2)->first();
+        if ($CMcheck) {
+            $Chat = ChatEloquent::find($chatData['chat_id']);
+            $Chat->chat_name = $chatData['chat_name'];
+            $Chat->save();
+            return '';
+        }else{
+            return '您不是該群組成員';
+        }
+
+    }
 }
