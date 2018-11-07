@@ -12,7 +12,15 @@ use Carbon\Carbon;
 
 class BaseService
 {
-    public function timeDistance($time)
+    function setAllTime(&$dataList)
+    {
+        foreach ($dataList as $item) {
+            $time = $this->setTime($item->created_at);
+            $item->created_at = $time;
+        }
+    }
+
+    public function setTime($time)
     {
         $now = Carbon::now();
         $carbonTime = Carbon::parse($time);

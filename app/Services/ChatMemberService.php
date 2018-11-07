@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 2018/10/3
- * Time: 15:31
- */
 
 namespace App\Services;
 
@@ -15,11 +9,8 @@ use Image;
 use Storage;
 use DB;
 
-
 class ChatMemberService
 {
-
-
     public function addCM($chatMemberData)
     {
         $ChatCheck = ChatEloquent::find($chatMemberData['chat_id']);
@@ -39,6 +30,7 @@ class ChatMemberService
                         return '該帳號已在邀請名單中';
                     if ($CMCheck->status == 2)
                         return '該帳號已在群組中';
+                    return 'error';
                 }
             } else {
                 return '無此使用者';
@@ -51,18 +43,16 @@ class ChatMemberService
     public function inviteCM($chatMemberData)
     {
         //邀請人Check
-        $invCheck = ChatMemberEloquent::
-        where('chat_id', $chatMemberData['chat_id'])->
-        where('account', $chatMemberData['account'])->
-        where('status', 2)->first();
+        $invCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
+            ->where('account', $chatMemberData['account'])
+            ->where('status', 2)->first();
         if ($invCheck) {
             //被邀請人UserCheck
             $accCheck = UserEloquent::find($chatMemberData['inv_account']);
             if ($accCheck) {
                 //被邀請人CMCheck
-                $CMCheck = ChatMemberEloquent::
-                where('chat_id', $chatMemberData['chat_id'])->
-                where('account', $chatMemberData['inv_account'])->first();
+                $CMCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
+                    ->where('account', $chatMemberData['inv_account'])->first();
                 if (!$CMCheck) {
                     $chatMemberData['status'] = 1;
                     $chatMemberData['account'] = $chatMemberData['inv_account'];
@@ -116,15 +106,13 @@ class ChatMemberService
     public function refuseCM($chatMemberData)
     {
         //被邀請人check
-        $CMCheck = ChatMemberEloquent::
-        where('chat_id', $chatMemberData['chat_id'])
+        $CMCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
             ->where('account', $chatMemberData['inv_account'])
             ->whereIn('status', [0, 1])->first();
         if ($CMCheck) {
             if ($CMCheck->status == 0) {
                 //准許者check
-                $UserCheck = ChatMemberEloquent::
-                where('chat_id', $chatMemberData['chat_id'])
+                $UserCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
                     ->where('account', $chatMemberData['account'])
                     ->where('status', 2)->first();
                 if ($UserCheck) {
@@ -160,7 +148,7 @@ class ChatMemberService
 
     public function getCM($chatMemberData)
     {
-        $CMList = ChatMemberEloquent:: where('chat_id', $chatMemberData['chat_id'])
+        $CMList = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
             ->with(['user' => function ($query) {
                 $query->select(['account', 'name', 'profile_pic']);
             }])
@@ -174,11 +162,14 @@ class ChatMemberService
             ->where('account', $chatMemberData['account'])
             ->where('status', 2)->first();
         if ($CMCheck) {
-            $CMList = ChatMemberEloquent:: where('chat_id', $chatMemberData['chat_id'])
+            $CMList = DB::table('chat_members')->where('chat_id', $chatMemberData['chat_id'])
                 ->where('status', 0)
-                ->with(['user' => function ($query) {
-                    $query->select(['account', 'name', 'profile_pic']);
-                }])->get();
+                ->select('chat_members.account', 'chat_members.created_at', 'user.name', 'user.profile_pic')
+                ->join('user', 'user.account', '=', 'chat_members.account')
+                ->orderBy('chat_members.created_at', 'desc')
+                ->get();
+            $baseService = new BaseService();
+            $baseService->setAllTime($CMList);
             return $CMList;
         } else {
             return '您不是該群組成員';
@@ -187,8 +178,7 @@ class ChatMemberService
 
     public function getMyInvite($chatMemberData)
     {
-        $CM_Chat = ChatMemberEloquent::
-        join('chat', 'chatmember.chat_id', '=', 'chat.chat_id')
+        $CM_Chat = ChatMemberEloquent::join('chat', 'chatmember.chat_id', '=', 'chat.chat_id')
             ->where('chatmember.account', $chatMemberData['account'])
             ->where('chatmember.status', 1)
             ->select('chat.chat_id', 'chat.chat_name', 'chat.profile_pic')
@@ -198,16 +188,13 @@ class ChatMemberService
 
     public function getMyChat($chatMemberData)
     {
-        $DataList = DB::select("select chats.chat_id,chats.chat_name,chats.profile_pic as chat_profile_pic,messages.content,messages.type,messages.account,messages.created_at,user.name,user.profile_pic as user_profile_pic from chats " .
+        $dataList = DB::select("select chats.chat_id,chats.chat_name,chats.profile_pic as chat_profile_pic,messages.content,messages.type,messages.account,messages.created_at,user.name,user.profile_pic as user_profile_pic from chats " .
             "left join messages on messages.message_id = (select message_id from messages where messages.chat_id = chats.chat_id order by created_at desc limit 1) " .
             "left join user on messages.account = user.account " .
             "where chats.chat_id in (select chat_id from chat_members where account = '" . $chatMemberData['account'] . "' and status = 2) " .
             "order by messages.created_at desc");
         $baseService = new BaseService();
-        foreach ($DataList as $item) {
-            $timeDistance = $baseService->timeDistance($item->created_at);
-            $item->created_at = $timeDistance;
-        }
-        return $DataList;
+        $baseService->setAllTime($dataList);
+        return $dataList;
     }
 }
