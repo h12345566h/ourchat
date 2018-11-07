@@ -85,9 +85,11 @@ class ChatController extends Controller
         if (!$file->isValid()) {
             return response()->json(['保存圖片失敗'], 400, [], JSON_UNESCAPED_UNICODE);
         }
-        $newFileName = $this->chatService->updateChatProfilePic($file, $request->input('chat_id'));
+        $newFileName = $this->chatService->updateChatProfilePic($file, $request->input('chat_id'),$request->input('account'));
         if ($newFileName == '0')
             return response()->json(['檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
+        else if ($newFileName == '您並非該群組成員')
+            return response()->json(['您並非該群組成員'], 400, [], JSON_UNESCAPED_UNICODE);
         else
             return response()->json($newFileName, 200, [], JSON_UNESCAPED_UNICODE);
     }
