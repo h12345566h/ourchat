@@ -16,34 +16,25 @@ class BaseService
     {
         $now = Carbon::now();
         $carbonTime = Carbon::parse($time);
-        $Distance = strtotime($now) - strtotime($time);
+//        $distance = strtotime($now) - strtotime($time);
 
-        if ($Distance < 86400) {
-            //一天內
-            if ($carbonTime->hour < 12) {
-                return '上午 ' . $carbonTime->hour . ':' . $carbonTime->minute;
-            } else {
-                return '下午' . ($carbonTime->hour - 12) . ':' . $carbonTime->minute;
-            }
+        if ($carbonTime->hour < 12) {
+            if ($carbonTime->hour == 0)
+                $resStr = '上午 12:' . str_pad($carbonTime->minute, 2, "0", STR_PAD_LEFT);
+            else
+                $resStr = '上午 ' . $carbonTime->hour . ':' . str_pad($carbonTime->minute, 2, "0", STR_PAD_LEFT);
         } else {
-            //一天前
-
-            //一年前
-            if ($carbonTime->year < $now->year) {
-                if ($carbonTime->hour < 12) {
-                    return $carbonTime->year . '/' . $carbonTime->month . '/' . $carbonTime->day . ' 上午 ' . $carbonTime->hour . ':' . $carbonTime->minute;
-                } else {
-                    return $carbonTime->year . '/' . $carbonTime->month . '/' . $carbonTime->day . ' 下午 ' . ($carbonTime->hour - 12) . ':' . $carbonTime->minute;
-                }
-            } else {
-                //一年內
-                if ($carbonTime->hour < 12) {
-                    return $carbonTime->month . '/' . $carbonTime->day . ' 上午 ' . $carbonTime->hour . ':' . $carbonTime->minute;
-                } else {
-                    return $carbonTime->month . '/' . $carbonTime->day . ' 下午 ' . ($carbonTime->hour - 12) . ':' . $carbonTime->minute;
-                }
-            }
+            if ($carbonTime->hour == 12)
+                $resStr = '下午 12:' . str_pad($carbonTime->minute, 2, "0", STR_PAD_LEFT);
+            else
+                $resStr = '下午 ' . ($carbonTime->hour - 12) . ':' . str_pad($carbonTime->minute, 2, "0", STR_PAD_LEFT);
         }
+        if ($carbonTime->dayOfYear != $now->dayOfYear)
+            $resStr = $carbonTime->month . '/' . $carbonTime->day . ' ' . $resStr;
+        if ($carbonTime->year != $now->year)
+            $resStr = $carbonTime->year . '/' . $resStr;
+
+        return $resStr;
     }
 
 
