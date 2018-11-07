@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 2018/10/3
- * Time: 15:31
- */
 
 namespace App\Services;
 
@@ -15,8 +9,10 @@ class BaseService
     function setAllTime(&$dataList)
     {
         foreach ($dataList as $item) {
-            $time = $this->setTime($item->created_at);
-            $item->created_at = $time;
+            if ($item->created_at) {
+                $time = $this->setTime($item->created_at);
+                $item->created_at = $time;
+            }
         }
     }
 
