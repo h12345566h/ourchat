@@ -148,11 +148,14 @@ class ChatMemberService
 
     public function getCM($chatMemberData)
     {
-        $CMList = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
-            ->with(['user' => function ($query) {
-                $query->select(['account', 'name', 'profile_pic']);
-            }])
+        $CMList = DB::table('chat_members')->where('chat_members.chat_id', '=',  $chatMemberData['chat_id'])
+            ->select('chat_members.*', 'user.name', 'user.profile_pic')
+            ->join('user', 'chat_members.account', '=', 'user.account')
+            ->orderBy('user.account', 'desc')
             ->get();
+
+        $baseService = new BaseService();
+        $baseService->setAllTime($CMList);
         return $CMList;
     }
 

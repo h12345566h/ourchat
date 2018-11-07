@@ -59,7 +59,7 @@ class ChatService
         $baseService->setAllTime($dataList);
         return $dataList;
     }
- 
+
     public function updateChatProfilePic(\Illuminate\Http\UploadedFile $file, $chat_id, $account)
     {
         $CMcheck = ChatMemberEloquent::where('account', $account)
