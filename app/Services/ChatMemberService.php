@@ -151,7 +151,7 @@ class ChatMemberService
         $CMList = DB::table('chat_members')->where('chat_members.chat_id', '=',  $chatMemberData['chat_id'])
             ->select('chat_members.*', 'user.name', 'user.profile_pic')
             ->join('user', 'chat_members.account', '=', 'user.account')
-            ->orderBy('user.account', 'desc')
+            ->orderBy('chat_members.cm_id', 'desc')
             ->get();
 
         $baseService = new BaseService();
