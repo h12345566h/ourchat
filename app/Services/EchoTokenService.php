@@ -79,7 +79,7 @@ class EchoTokenService
 
         $client = new Client();
         try {
-            $res = $client->request('POST', "http://localhost:8080/EchoServlet", [
+            $res = $client->request('POST', "http://localhost:8080/EchoServer/EchoServlet", [
                 'form_params' => [
                     'to_account' => $accountList,
                     'firebase_token_str' => $firebaseTokenList,
