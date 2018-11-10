@@ -58,7 +58,7 @@ class UserController extends Controller
         if ($objValidator->fails())
             return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
         $this->userService->register($postData);
-        return response()->json('註冊成功', 200, [], JSON_UNESCAPED_UNICODE);
+        return response()->json(Auth::guard()->attempt($postData), 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
 
@@ -105,7 +105,7 @@ class UserController extends Controller
         $resMessage = $this->userService->login($postData);
         if ($resMessage != '')
             return response()->json([$resMessage], 400);
-        return response()->json(['token' => Auth::guard()->attempt($postData)], 200, [], JSON_UNESCAPED_UNICODE);
+        return response()->json(Auth::guard()->attempt($postData), 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
 
