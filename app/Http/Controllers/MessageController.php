@@ -104,7 +104,7 @@ class MessageController extends Controller
             }
         }
         $files = $input['Image'];
-        $newFileName = $this->messageService->uploadImg($files);
+        $newFileName = $this->messageService->uploadImg($files, $request->input('chat_id'), $request->input('account'));
         if ($newFileName == '002錯誤')
             return response()->json(['002錯誤'], 400, [], JSON_UNESCAPED_UNICODE);
         else if ($newFileName == '0')

@@ -95,24 +95,31 @@ class MessageService
         }
     }
 
-    public function uploadImg($files)
+    public function uploadImg($files, $chat_id, $account)
     {
-        $filesName = [];
-        if (is_array($files)) {
-            foreach ($files as $file) {
-                $newFileName = date("YmdHis", time()) . '___' . rand(1000, 9999) . '___' . $file->getClientOriginalName();
-                if (strlen($newFileName) > 200)
-                    return '0';
-                $image = Image::make($file);
-                $image->resize(350, null, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                })->save('images/Image/' . $newFileName);
-                array_push($filesName, $newFileName);
+        $CMcheck = ChatMemberEloquent::where('account', $account)
+            ->where('chat_id', $chat_id)
+            ->where('status', 2)->first();
+        if ($CMcheck) {
+            $filesName = [];
+            if (is_array($files)) {
+                foreach ($files as $file) {
+                    $newFileName = date("YmdHis", time()) . '___' . rand(1000, 9999) . '___' . $file->getClientOriginalName();
+                    if (strlen($newFileName) > 200)
+                        return '0';
+                    $image = Image::make($file);
+                    $image->resize(350, null, function ($constraint) {
+                        $constraint->aspectRatio();
+                        $constraint->upsize();
+                    })->save('images/Image/' . $newFileName);
+                    array_push($filesName, $newFileName);
+                }
+                return $filesName;
+            } else {
+                return '002錯誤';
             }
-            return $filesName;
         } else {
-            return '002錯誤';
+            return '您並非該群組成員';
         }
 
     }

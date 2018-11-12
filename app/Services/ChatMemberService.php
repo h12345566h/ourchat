@@ -148,16 +148,24 @@ class ChatMemberService
 
     public function getCM($chatMemberData)
     {
-        $CMList = DB::table('chat_members')->where('chat_members.chat_id',  $chatMemberData['chat_id'])
-            ->where('chat_members.status',  2)
-            ->select('chat_members.*', 'user.name', 'user.profile_pic')
-            ->join('user', 'chat_members.account', '=', 'user.account')
-            ->orderBy('chat_members.cm_id', 'desc')
-            ->get();
+        $CMcheck = ChatMemberEloquent::where('account', $chatMemberData['account'])
+            ->where('chat_id', $chatMemberData['chat_id'])
+            ->where('status', 2)->first();
+        if ($CMcheck) {
+            $CMList = DB::table('chat_members')->where('chat_members.chat_id', $chatMemberData['chat_id'])
+                ->where('chat_members.status', 2)
+                ->select('chat_members.*', 'user.name', 'user.profile_pic')
+                ->join('user', 'chat_members.account', '=', 'user.account')
+                ->orderBy('chat_members.cm_id', 'desc')
+                ->get();
 
-        $baseService = new BaseService();
-        $baseService->setAllTime($CMList);
-        return $CMList;
+            $baseService = new BaseService();
+            $baseService->setAllTime($CMList);
+            return $CMList;
+        } else {
+            return '您不是該群組成員';
+        }
+
     }
 
     public function getUncheckCM($chatMemberData)
