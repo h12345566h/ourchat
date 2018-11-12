@@ -148,7 +148,8 @@ class ChatMemberService
 
     public function getCM($chatMemberData)
     {
-        $CMList = DB::table('chat_members')->where('chat_members.chat_id', '=',  $chatMemberData['chat_id'])
+        $CMList = DB::table('chat_members')->where('chat_members.chat_id',  $chatMemberData['chat_id'])
+            ->where('chat_members.status',  2)
             ->select('chat_members.*', 'user.name', 'user.profile_pic')
             ->join('user', 'chat_members.account', '=', 'user.account')
             ->orderBy('chat_members.cm_id', 'desc')

@@ -38,7 +38,9 @@ class MessageService
                 $message = MessageEloquent::create($messageData);
 
                 //推撥
-                $getUser = ChatMemberEloquent::where('chat_id', $messageData['chat_id'])->select('account')->get();
+                $getUser = ChatMemberEloquent::where('chat_id', $messageData['chat_id'])
+                    ->where('status', 2)
+                    ->select('account')->get();
                 $plucked = $getUser->pluck('account')->toarray();
 
                 $userName = UserEloquent::find($messageData['account']);
