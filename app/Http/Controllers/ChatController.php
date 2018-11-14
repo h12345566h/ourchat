@@ -23,7 +23,7 @@ class ChatController extends Controller
         $objValidator = Validator::make(
             $chatData,
             [
-                'chat_name' => 'required|string ',
+                'chat_name' => 'required|string',
             ],
             [
                 'chat_name.required' => '請輸入聊天室名稱',
@@ -41,9 +41,31 @@ class ChatController extends Controller
     }
     //endregion
 
+    //region 取得聊天室
+    public function getChat(Request $request)
+    {
+        $objValidator = Validator::make(
+            $request->all(),
+            [
+                'chat_id' => 'required|integer',
+            ],
+            [
+                'chat_id.*' => '001錯誤',
+            ]
+        );
+        if ($objValidator->fails())
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
+
+        $result = $this->chatService->getChat($request->input('chat_id'));
+        if ($result)
+            return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
+        else
+            return response()->json(['無此聊天室'], 400, [], JSON_UNESCAPED_UNICODE);
+    }
+    //endregion
 
     //region 搜尋聊天室
-    public function getChat(Request $request)
+    public function searchChat(Request $request)
     {
         $chatData = $request->all();
         $objValidator = Validator::make(
@@ -59,7 +81,7 @@ class ChatController extends Controller
         if ($objValidator->fails())
             return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
 
-        $result = $this->chatService->getChat($chatData);
+        $result = $this->chatService->searchChat($chatData);
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
@@ -85,7 +107,7 @@ class ChatController extends Controller
         if (!$file->isValid()) {
             return response()->json(['保存圖片失敗'], 400, [], JSON_UNESCAPED_UNICODE);
         }
-        $newFileName = $this->chatService->updateChatProfilePic($file, $request->input('chat_id'),$request->input('account'));
+        $newFileName = $this->chatService->updateChatProfilePic($file, $request->input('chat_id'), $request->input('account'));
         if ($newFileName == '0')
             return response()->json(['檔名過長'], 400, [], JSON_UNESCAPED_UNICODE);
         else if ($newFileName == '您並非該群組成員')
@@ -103,7 +125,7 @@ class ChatController extends Controller
         $objValidator = Validator::make(
             $chatData,
             [
-                'chat_name' => 'required|string ',
+                'chat_name' => 'required|string',
                 'chat_id' => 'required|integer',
             ],
             [

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 2018/10/3
- * Time: 15:31
- */
 
 namespace App\Services;
 
@@ -15,9 +9,18 @@ use Image;
 use Storage;
 use DB;
 
-
 class ChatService
 {
+    public function getChat($chatId)
+    {
+        $chat = DB::table('chats')->where('chats.chat_id', $chatId)
+            ->select('chats.chat_id', 'chats.chat_name', 'chats.profile_pic as chat_profile_pic', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'user.name', 'user.profile_pic as user_profile_pic')
+            ->leftJoin('messages', 'messages.message_id', '=', DB::raw('(select message_id from messages where messages.chat_id = chats.chat_id order by created_at desc limit 1)'))
+            ->leftJoin('user', 'messages.account','=','user.account')
+            ->first();
+        return $chat;
+    }
+
     public function createChat($chatData)
     {
         $UserCheck = UserEloquent::find($chatData['account']);
@@ -41,8 +44,7 @@ class ChatService
         }
     }
 
-
-    public function getChat($chatData)
+    public function searchChat($chatData)
     {
         $keyword = '%' . $chatData['keyword'] . '%';
 
@@ -99,7 +101,7 @@ class ChatService
             $Chat->chat_name = $chatData['chat_name'];
             $Chat->save();
             return '';
-        }else{
+        } else {
             return '您不是該群組成員';
         }
 
