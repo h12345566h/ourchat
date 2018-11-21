@@ -10,11 +10,6 @@ class ChatMember extends Model
     protected $primaryKey = 'cm_id';
     const UPDATED_AT = null;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'account', 'chat_id', 'status'
     ];

@@ -79,31 +79,31 @@ class MessageController extends Controller
             $request->all(),
             [
                 'chat_id' => 'required|integer',
-                'Image' => 'required|array'
+                'message_image' => 'required'
             ],
             [
                 'chat_id.*' => '001錯誤',
-                'Image.required' => '請上傳圖片'
+                'message_image.required' => '請上傳圖片'
             ]
         );
         if ($objValidator->fails())
             return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
         //圖片陣列內圖片驗證
         $imageRules = array(
-            'Image' => 'mimes:jpeg,bmp,png'
+            'message_image' => 'mimes:jpeg,bmp,png'
         );
         $imageMessage = array(
             'mimes' => '圖檔格式錯誤(副檔名須為jpg ,jpeg, png, bmp)',
             'required' => '請上傳圖片'
         );
-        foreach ($input['Image'] as $image) {
-            $images = array('Image' => $image);
+        foreach ($input['message_image'] as $image) {
+            $images = array('image' => $image);
             $imageValidator = Validator::make($images, $imageRules, $imageMessage);
             if ($imageValidator->fails()) {
                 return response()->json($imageValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
             }
         }
-        $files = $input['Image'];
+        $files = $input['message_image'];
         $newFileName = $this->messageService->uploadImg($files, $request->input('chat_id'), $request->input('account'));
         if ($newFileName == '002錯誤')
             return response()->json(['002錯誤'], 400, [], JSON_UNESCAPED_UNICODE);

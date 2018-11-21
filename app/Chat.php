@@ -9,20 +9,10 @@ class Chat extends Model
     protected $table = 'chats';
     protected $primaryKey = 'chat_id';
     const UPDATED_AT = null;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
+
     protected $fillable = [
         'creator', 'chat_name'
     ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
 
     public function user()
     {
