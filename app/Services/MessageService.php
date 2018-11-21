@@ -13,7 +13,6 @@ use DB;
 use Image;
 use Storage;
 
-
 class MessageService
 {
     public $echoTokenService;
@@ -97,10 +96,10 @@ class MessageService
 
     public function uploadImg($files, $chat_id, $account)
     {
-        $CMcheck = ChatMemberEloquent::where('account', $account)
+        $CMCheck = ChatMemberEloquent::where('account', $account)
             ->where('chat_id', $chat_id)
             ->where('status', 2)->first();
-        if ($CMcheck) {
+        if ($CMCheck) {
             $filesName = [];
             if (is_array($files)) {
                 foreach ($files as $file) {
@@ -121,6 +120,5 @@ class MessageService
         } else {
             return '您並非該群組成員';
         }
-
     }
 }
