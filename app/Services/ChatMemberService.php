@@ -148,10 +148,10 @@ class ChatMemberService
 
     public function getCM($chatMemberData)
     {
-        $CMcheck = ChatMemberEloquent::where('account', $chatMemberData['account'])
+        $CMCheck = ChatMemberEloquent::where('account', $chatMemberData['account'])
             ->where('chat_id', $chatMemberData['chat_id'])
             ->where('status', 2)->first();
-        if ($CMcheck) {
+        if ($CMCheck) {
             $CMList = DB::table('chat_members')->where('chat_members.chat_id', $chatMemberData['chat_id'])
                 ->where('chat_members.status', 2)
                 ->select('chat_members.*', 'user.name', 'user.profile_pic')
