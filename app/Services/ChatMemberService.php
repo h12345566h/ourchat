@@ -200,7 +200,6 @@ class ChatMemberService
 
     public function getMyChat($chatMemberData)
     {
-        DB::getPdo()->setAttribute(\PDO::DBLIB_ATTR_STRINGIFY_UNIQUEIDENTIFIER, true);
         $dataList = DB::select("select chats.chat_id,chats.chat_name,chats.profile_pic as chat_profile_pic,messages.content,messages.type,messages.account,messages.created_at,user.name,user.profile_pic as user_profile_pic from chats " .
             "left join messages on messages.message_id = (select message_id from messages where messages.chat_id = chats.chat_id order by created_at desc limit 1) " .
             "left join user on messages.account = user.account " .
@@ -208,9 +207,10 @@ class ChatMemberService
             "order by messages.created_at desc");
         $baseService = new BaseService();
         $baseService->setAllTime($dataList);
-        foreach ($dataList as $data) {
-            if (strlen($data->content) > 16)
-                $data->content = substr($data->content, 0, 16) . "...";
+        foreach ($dataList as &$data) {
+            $data = (array)$data;
+            if (strlen($data['content']) > 16)
+                $data['content'] = substr($data['content'], 0, 16) . "...";
         }
         return $dataList;
     }
