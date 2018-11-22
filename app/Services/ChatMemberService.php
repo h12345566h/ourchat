@@ -207,10 +207,10 @@ class ChatMemberService
             "order by messages.created_at desc");
         $baseService = new BaseService();
         $baseService->setAllTime($dataList);
-//        foreach ($dataList as $data) {
-//            if (strlen($data->content) > 16)
-//                $data->content = substr($data->content, 0, 16) . "...";
-//        }
+        foreach ($dataList as $data) {
+            if (strlen($data->content) > 16)
+                $data->content = substr($data->content, 0, 16) . "...";
+        }
         return $dataList;
     }
 }
