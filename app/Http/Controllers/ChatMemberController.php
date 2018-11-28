@@ -203,8 +203,7 @@ class ChatMemberController extends Controller
     //region 取得我的聊天室
     public function getMyChat(Request $request)
     {
-        $chatMemberData = $request->all();
-        $result = $this->ChatMemberService->getMyChat($chatMemberData);
+        $result = $this->ChatMemberService->getMyChat($request->input("account"));
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
