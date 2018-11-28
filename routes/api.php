@@ -19,7 +19,6 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
 
     /*刷新token*/
     Route::group(['middleware' => 'RefreshToken'], function () {
-        /* middleware_test */
         Route::get('RefreshToken', 'UserController@RefreshToken');
     });
 
