@@ -17,12 +17,13 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
     Route::post('login', 'UserController@login');
     Route::post('register', 'UserController@register');
 
-    /*update test123*/
-    Route::group(['middleware' => ['jwt_auth', 'RefreshToken']], function () {
-
+    /*刷新token*/
+    Route::group(['middleware' => 'RefreshToken'], function () {
         /* middleware_test */
-        Route::get('middlewareTest', 'UserController@middlewareTest');
+        Route::get('RefreshToken', 'UserController@RefreshToken');
+    });
 
+    Route::group(['middleware' => 'jwt_auth'], function () {
         /*  user  */
         Route::get('getUserData', 'UserController@getUserData');
         Route::post('logout', 'UserController@logout');
@@ -30,6 +31,7 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
         Route::get('searchUser', 'UserController@searchUser');
         Route::post('editUser', 'UserController@editUser');
         Route::post('passwordChange', 'UserController@passwordChange');
+        Route::post('middlewareTest', 'UserController@middlewareTest');
 
         /*  message  */
         Route::post('sendMessage', 'MessageController@sendMessage');

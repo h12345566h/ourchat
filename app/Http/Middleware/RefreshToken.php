@@ -46,8 +46,8 @@ class RefreshToken extends BaseMiddleware
                 throw new UnauthorizedHttpException('jwt-auth', $exception->getMessage());
             }
         }
-
+        $request->headers->set('authorization', 'Bearer ' . $token);
         // 在响应头中返回新的 token
-        return $this->setAuthenticationHeader($next($request), $token);
+       return  $this->setAuthenticationHeader($next($request), $token);
     }
 }

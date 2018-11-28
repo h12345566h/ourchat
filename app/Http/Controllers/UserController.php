@@ -223,11 +223,12 @@ class UserController extends Controller
     }
     //endregion
 
-    // region 測試 中介層
-    public function middlewareTest(Request $request)
+    // region 刷新token
+    public function RefreshToken(Request $request)
     {
-        $postData = $request->all();
-        return response()->json([$postData], 200, [], JSON_UNESCAPED_UNICODE);
+        $headers = $request->headers->all();
+        $auth = substr( $headers['authorization'][0],7);
+        return response()->json($auth, 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
 
