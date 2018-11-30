@@ -19,12 +19,12 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
 
     /*刷新token*/
     Route::group(['middleware' => 'RefreshToken'], function () {
-        Route::get('RefreshToken', 'UserController@RefreshToken');
+        Route::get('getUserData', 'UserController@getUserData');
     });
 
     Route::group(['middleware' => 'jwt_auth'], function () {
+
         /*  user  */
-        Route::get('getUserData', 'UserController@getUserData');
         Route::post('logout', 'UserController@logout');
         Route::post('updateProfilePic', 'UserController@updateProfilePic');
         Route::get('searchUser', 'UserController@searchUser');

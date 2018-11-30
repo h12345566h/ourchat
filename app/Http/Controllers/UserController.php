@@ -145,9 +145,13 @@ class UserController extends Controller
     //endregion
 
     // region GET個人資料
-    public function getUserData()
+    public function getUserData(Request $request)
     {
-        return response()->json(Auth::guard()->user(), 200, [], JSON_UNESCAPED_UNICODE);
+        $headers = $request->headers->all();
+        $token = substr( $headers['authorization'][0],7);
+        $auth=Auth::guard()->user();
+        $auth['token']=$token;
+        return response()->json([$auth], 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
 
@@ -222,15 +226,5 @@ class UserController extends Controller
         return response()->json($result, 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
-
-    // region 刷新token
-    public function RefreshToken(Request $request)
-    {
-        $headers = $request->headers->all();
-        $auth = substr( $headers['authorization'][0],7);
-        return response()->json($auth, 200, [], JSON_UNESCAPED_UNICODE);
-    }
-    //endregion
-
 
 }
