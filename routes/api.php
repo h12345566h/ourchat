@@ -18,9 +18,9 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
     Route::post('register', 'UserController@register');
 
     /*刷新token*/
-    Route::group(['middleware' => 'RefreshToken'], function () {
-        Route::get('getUserData', 'UserController@getUserData');
-    });
+//    Route::group(['middleware' => 'RefreshToken'], function () {
+//        Route::get('getUserData', 'UserController@getUserData');
+//    });
 
     Route::group(['middleware' => 'jwt_auth'], function () {
 
@@ -28,6 +28,7 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
         Route::post('logout', 'UserController@logout');
         Route::post('updateProfilePic', 'UserController@updateProfilePic');
         Route::get('searchUser', 'UserController@searchUser');
+        Route::get('getUserData', 'UserController@getUserData');
         Route::post('editUser', 'UserController@editUser');
         Route::post('passwordChange', 'UserController@passwordChange');
         Route::post('middlewareTest', 'UserController@middlewareTest');
