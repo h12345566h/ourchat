@@ -147,11 +147,9 @@ class UserController extends Controller
     // region GET個人資料
     public function getUserData(Request $request)
     {
-        $headers = $request->headers->all();
-        $token = substr( $headers['authorization'][0],7);
-        $auth=Auth::guard()->user();
-        $auth['token']=$token;
-        return response()->json([$auth], 200, [], JSON_UNESCAPED_UNICODE);
+        $auth = Auth::guard()->user();
+        $auth['token'] = $request->input("token");
+        return response()->json($auth, 200, [], JSON_UNESCAPED_UNICODE);
     }
     //endregion
 

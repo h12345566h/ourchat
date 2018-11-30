@@ -30,8 +30,7 @@ class RefreshToken extends BaseMiddleware
             $this->checkForToken($request);
             // 检测用户的登录状态，如果正常则通过
             if ($this->auth->parseToken()->authenticate()) {
-                $token = $this->auth->refresh();
-                $request->headers->set('authorization', 'Bearer ' . $token);
+                $request['token'] = $this->auth->refresh();
                 return $next($request);
             }
             throw new UnauthorizedHttpException('jwt-auth', '未登入');
@@ -47,8 +46,7 @@ class RefreshToken extends BaseMiddleware
                 throw new UnauthorizedHttpException('jwt-auth', $exception->getMessage());
             }
         }
-        $request->headers->set('authorization', 'Bearer ' . $token);
-        // 在响应头中返回新的 token
+        $request['token'] = $token;
         return $next($request);
     }
 }
