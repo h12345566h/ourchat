@@ -21,7 +21,7 @@ class jwt_auth extends BaseMiddleware
         try {
             $this->auth->parseToken()->authenticate();
         } catch (JWTException $exception) {
-            return response()->json(['未登入'], 400);
+            return response()->json(['未登入'], 400, [], JSON_UNESCAPED_UNICODE);
         }
         $request['account'] = Auth::guard()->user()['account'];
         return $next($request);
