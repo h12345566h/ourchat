@@ -30,16 +30,17 @@ class EchoTokenService
                 if ($oldToken->account != $postData['account'])
                     $oldToken->account = $postData['account'];
                 $oldToken->token = $postData['new_token'];
+                $oldToken->last_use_time = \Carbon\Carbon::now();
                 $oldToken->save();
                 return;
             }
         } else {
             $token = EchoTokenEloquent::where('token', $postData['new_token'])->first();
             if ($token) {
-                if ($token->account != $postData['account']) {
+                $token->last_use_time = \Carbon\Carbon::now();
+                if ($token->account != $postData['account'])
                     $token->account = $postData['account'];
-                    $token->save();
-                }
+                $token->save();
 
                 return;
             }

@@ -13,7 +13,6 @@ class CreateEchoTokensTable extends Migration
      */
     public function up()
     {
-
         Schema::create('echo_tokens', function (Blueprint $table) {
             $table->increments('et_id');
             $table->string('account', 20);
@@ -21,6 +20,7 @@ class CreateEchoTokensTable extends Migration
             $table->unsignedTinyInteger('type');
             $table->string('token', 300);
             $table->dateTime('created_at');
+            $table->timestamp('last_use_time')->useCurrent();
 
             $table->foreign('account')->references('account')->on('user');
         });
