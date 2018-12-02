@@ -24,7 +24,6 @@ class MessageService
         $this->baseService = new BaseService();
     }
 
-
     public function sendMessage($messageData)
     {
         $CMCheck = ChatMemberEloquent::where('account', $messageData['account'])
@@ -68,7 +67,6 @@ class MessageService
         } else {
             return '此聊天室無此使用者';
         }
-
     }
 
     public function getMessage($messageData)
@@ -78,6 +76,7 @@ class MessageService
             ->where('status', 2)->first();
         if ($CMCheck) {
             $sql = DB::table('messages')->where('chat_id', $messageData['chat_id'])
+                ->where('revoke', false)
                 ->select('messages.message_id', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'user.name', 'user.profile_pic')
                 ->join('user', 'messages.account', '=', 'user.account');
 
@@ -92,6 +91,18 @@ class MessageService
         } else {
             return '此聊天室無此使用者';
         }
+    }
+
+    public function revoke($deleteData)
+    {
+        $message = MessageEloquent::where('account', $deleteData['account'])
+            ->where('message_id', $deleteData['message_id'])->first();
+        if ($message) {
+            $message->revoke = true;
+            $message->save();
+            return "";
+        } else
+            return "無此訊息";
     }
 
     public function uploadImg($file, $chat_id, $account)

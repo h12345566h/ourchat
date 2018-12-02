@@ -37,6 +37,7 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
         Route::post('sendMessage', 'MessageController@sendMessage');
         Route::post('uploadImg', 'MessageController@uploadImg');
         Route::get('getMessage', 'MessageController@getMessage');
+        Route::get('revoke', 'MessageController@revoke');
 
         /*  chatmember  */
         Route::post('addCM', 'ChatMemberController@addCM');

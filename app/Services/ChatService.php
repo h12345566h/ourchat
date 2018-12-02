@@ -64,10 +64,10 @@ class ChatService
 
     public function updateChatProfilePic(\Illuminate\Http\UploadedFile $file, $chat_id, $account)
     {
-        $CMcheck = ChatMemberEloquent::where('account', $account)
+        $CMCheck = ChatMemberEloquent::where('account', $account)
             ->where('chat_id', $chat_id)
             ->where('status', 2)->first();
-        if ($CMcheck) {
+        if ($CMCheck) {
             $newFileName = date("YmdHis", time()) . '___' . rand(1000, 9999) . '___' . $file->getClientOriginalName();
             if (strlen($newFileName) > 200)
                 return '0';
@@ -93,10 +93,10 @@ class ChatService
 
     public function editChat($chatData)
     {
-        $CMcheck = ChatMemberEloquent::where('account', $chatData['account'])
+        $CMCheck = ChatMemberEloquent::where('account', $chatData['account'])
             ->where('chat_id', $chatData['chat_id'])
             ->where('status', 2)->first();
-        if ($CMcheck) {
+        if ($CMCheck) {
             $Chat = ChatEloquent::find($chatData['chat_id']);
             $Chat->chat_name = $chatData['chat_name'];
             $Chat->save();

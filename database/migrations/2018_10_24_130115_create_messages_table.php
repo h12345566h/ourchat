@@ -15,10 +15,11 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('message_id');
+            $table->unsignedInteger('chat_id');
+            $table->string('account', 20);
             $table->string('content', 3000);
             $table->unsignedInteger('type');
-            $table->string('account', 20);
-            $table->unsignedInteger('chat_id');
+            $table->boolean('revoke')->default(false);
             $table->dateTime('created_at');
 
             $table->foreign('account')->references('account')->on('user');

@@ -71,6 +71,30 @@ class MessageController extends Controller
     }
     //endregion
 
+    //region revoke
+    public function revoke(Request $request)
+    {
+        $deleteData = $request->all();
+        $objValidator = Validator::make(
+            $deleteData,
+            [
+                'message_id' => 'required|integer'
+            ],
+            [
+                'message_id.*' => '001錯誤',
+            ]
+        );
+        if ($objValidator->fails())
+            return response()->json($objValidator->errors()->all(), 400, [], JSON_UNESCAPED_UNICODE);
+
+        $result = $this->messageService->revoke($deleteData);
+        if ($result != "")
+            return response()->json([$result], 400, [], JSON_UNESCAPED_UNICODE);
+        else
+            return response()->json("收回成功", 200, [], JSON_UNESCAPED_UNICODE);
+    }
+    //endregion
+
     // region 上傳圖片
     public function uploadImg(Request $request)
     {
