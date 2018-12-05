@@ -41,8 +41,8 @@ class MessageService
                     ->select('account')->get();
                 $plucked = $getUser->pluck('account')->toarray();
 
-                $userName = UserEloquent::find($messageData['account']);
-                $chatName = ChatEloquent::find($messageData['chat_id']);
+                $userData = UserEloquent::find($messageData['account']);
+                $chatData = ChatEloquent::find($messageData['chat_id']);
                 $notice['account'] = $plucked;
 
                 $push_data['message_id'] = $message->message_id;
@@ -50,8 +50,8 @@ class MessageService
                 $push_data['type'] = $messageData['type'];
                 $push_data['account'] = $messageData['account'];
                 $push_data['created_at'] = $this->baseService->setTime($message->created_at);
-                $push_data['name'] = $userName->name;
-                $push_data['profile_pic'] = $userName->profile_pic;
+                $push_data['name'] = $userData->name;
+                $push_data['profile_pic'] = $userData->profile_pic;
                 $push_data['chat_id'] = $messageData['chat_id'];
 
                 $notice['push_data'] = $push_data;
@@ -59,7 +59,7 @@ class MessageService
                     $content = substr($messageData['content'], 0, 16) . "...";
                 else
                     $content = $messageData['content'];
-                $notice['simple'] = $userName->name . ' 在 ' . $chatName->chat_name . '：' . $content;
+                $notice['simple'] = $userData->name . ' 在 ' . $chatData->chat_name . '：' . $content;
                 //需做一些處理
                 $resData = $this->echoTokenService->echo($notice);
                 return $push_data;
