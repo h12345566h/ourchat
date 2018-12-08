@@ -85,6 +85,7 @@ class EchoTokenService
                     'to_account' => $accountList,
                     'firebase_token_str' => $firebaseTokenList,
                     'apns_token_str' => $apnsTokenList,
+                    'type' => $postData['type'],
                     'push_data' => json_encode($postData['push_data']),
                     'simple' => $postData['simple']
                 ]

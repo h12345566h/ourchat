@@ -36,30 +36,31 @@ class MessageService
                 $message = MessageEloquent::create($messageData);
 
                 //推撥
-                $getUser = ChatMemberEloquent::where('chat_id', $messageData['chat_id'])
+                $getUser = ChatMemberEloquent::where('chat_id', $message->chat_id)
                     ->where('status', 2)
                     ->select('account')->get();
                 $plucked = $getUser->pluck('account')->toarray();
 
-                $userData = UserEloquent::find($messageData['account']);
-                $chatData = ChatEloquent::find($messageData['chat_id']);
+                $userData = UserEloquent::find($message->account);
+                $chatData = ChatEloquent::find($message->chat_id);
                 $notice['account'] = $plucked;
 
                 $push_data['message_id'] = $message->message_id;
-                $push_data['content'] = $messageData['content'];
-                $push_data['type'] = $messageData['type'];
-                $push_data['account'] = $messageData['account'];
+                $push_data['content'] = $message->content;
+                $push_data['type'] = $message->type;
+                $push_data['account'] = $message->account;
                 $push_data['created_at'] = $this->baseService->setTime($message->created_at);
                 $push_data['name'] = $userData->name;
                 $push_data['profile_pic'] = $userData->profile_pic;
-                $push_data['chat_id'] = $messageData['chat_id'];
+                $push_data['chat_id'] = $message->chat_id;
 
                 $notice['push_data'] = $push_data;
-                if (strlen($messageData['content']) > 16)
-                    $content = substr($messageData['content'], 0, 16) . "...";
+                if (strlen($message->content) > 16)
+                    $content = substr($message->content, 0, 16) . "...";
                 else
-                    $content = $messageData['content'];
+                    $content = $message->content;
                 $notice['simple'] = $userData->name . ' 在 ' . $chatData->chat_name . '：' . $content;
+                $notice['type'] = "message";
                 //需做一些處理
                 $resData = $this->echoTokenService->echo($notice);
                 return $push_data;
@@ -100,6 +101,29 @@ class MessageService
         if ($message) {
             $message->revoke = true;
             $message->save();
+
+            $getUser = ChatMemberEloquent::where('chat_id', $message->chat_id)
+                ->where('status', 2)
+                ->select('account')->get();
+            $plucked = $getUser->pluck('account')->toarray();
+
+            $userData = UserEloquent::find($message->account);
+            $notice['account'] = $plucked;
+
+            $push_data['message_id'] = $message->message_id;
+            $push_data['content'] = $message->content;
+            $push_data['type'] = $message->type;
+            $push_data['account'] = $message->account;
+            $push_data['created_at'] = $this->baseService->setTime($message->created_at);
+            $push_data['name'] = $userData->name;
+            $push_data['profile_pic'] = $userData->profile_pic;
+            $push_data['chat_id'] = $message->chat_id;
+
+            $notice['push_data'] = $push_data;
+            $notice['simple'] = "";
+            $notice['type'] = "revoke";
+            //需做一些處理
+            $resData = $this->echoTokenService->echo($notice);
             return "";
         } else
             return "無此訊息";
