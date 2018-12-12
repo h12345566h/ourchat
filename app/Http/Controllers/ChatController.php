@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\ChatService;
-use Auth;
 use Illuminate\Http\Request;
 use Validator;
 

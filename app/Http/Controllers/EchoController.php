@@ -6,7 +6,6 @@ use App\Services\EchoTokenService;
 use Illuminate\Http\Request;
 use Validator;
 
-
 class EchoController extends Controller
 {
     public $echoTokenService;

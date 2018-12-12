@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\ChatMemberService;
-use Auth;
 use Validator;
 
 class ChatMemberController extends Controller
