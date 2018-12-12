@@ -39,7 +39,7 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
         Route::get('getMessage', 'MessageController@getMessage');
         Route::get('revoke', 'MessageController@revoke');
 
-        /*  chatmember  */
+        /*  chatMember  */
         Route::post('addCM', 'ChatMemberController@addCM');
         Route::post('inviteCM', 'ChatMemberController@inviteCM');
         Route::post('refuseCM', 'ChatMemberController@refuseCM');
@@ -50,14 +50,17 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
         Route::get('getMyInvite', 'ChatMemberController@getMyInvite');
         Route::get('getMyChat', 'ChatMemberController@getMyChat');
 
-        /*  caht  */
+        /*  chat  */
         Route::post('createChat', 'ChatController@createChat');
         Route::get('getChat', 'ChatController@getChat');
         Route::get('searchChat', 'ChatController@searchChat');
         Route::post('updateChatProfilePic', 'ChatController@updateChatProfilePic');
         Route::post('editChat', 'ChatController@editChat');
 
-        /*  Echo  */
+        /*  echo  */
         Route::post('createEchoToken', 'EchoController@createEchoToken');
+
+        /*  report  */
+        Route::post('createReport', 'ReportController@createReport');
     });
 });
