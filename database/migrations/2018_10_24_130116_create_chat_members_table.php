@@ -17,9 +17,11 @@ class CreateChatMembersTable extends Migration
             $table->increments('cm_id');
             $table->string('account', 20);
             $table->unsignedInteger('chat_id');
+            $table->unsignedInteger('message_id')->nullable();
             $table->integer('status');
             $table->dateTime('created_at');
 
+            $table->foreign('message_id')->references('message_id')->on('messages');
             $table->unique(['account', 'chat_id']);
             $table->foreign('account')->references('account')->on('user');
             $table->foreign('chat_id')->references('chat_id')->on('chats');
