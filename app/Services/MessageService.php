@@ -81,7 +81,6 @@ class MessageService
                 ->select('messages.message_id', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'user.name', 'user.profile_pic')
                 ->join('user', 'messages.account', '=', 'user.account');
 
-
             if (array_key_exists('message_id', $messageData)) {
                 $sql->where('message_id', '<', $messageData['message_id']);
                 $sql->orderBy('messages.message_id', 'desc');
