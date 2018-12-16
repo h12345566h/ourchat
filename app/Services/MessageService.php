@@ -84,19 +84,25 @@ class MessageService
             if (array_key_exists('message_id', $messageData)) {
                 $sql->where('message_id', '<', $messageData['message_id']);
                 $sql->orderBy('messages.message_id', 'desc');
-                $dataList = $sql->take(30)->get();
+                $dataList = $sql->take(10)->get();
             } else {
                 $sql->orderBy('messages.message_id', 'desc');
-                $dataList = $sql->take(30)->get();
+                $dataList = $sql->take(10)->get();
                 if (!$dataList->isEmpty()) {
                     $CMCheck->message_id = $dataList[0]->message_id;
                     $CMCheck->save();
                 }
             }
             $this->baseService->setAllTime($dataList);
-            $CMReaded = ChatMemberEloquent::where('chat_id', $messageData['chat_id'])
-                ->where('status', 2)->get(['account','message_id']);
-            $dataList['IsRead']=$CMReaded;
+            $read = DB::table('chat_members')->where('chat_id', $messageData['chat_id'])
+                ->where('status', 2)
+                ->where('message_id', '<=',$dataList->first()->message_id)
+                ->where('message_id', '>=',$dataList->last()->message_id)
+                ->select( 'user.account','user.name', 'user.profile_pic','chat_members.message_id','chat_members.message_id')
+                ->leftjoin('user', 'chat_members.account', '=', 'user.account')->get();
+            
+            $this->baseService->setRead($dataList,$read);
+
             return $dataList;
         } else {
             return '此聊天室無此使用者';
