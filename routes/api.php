@@ -62,5 +62,11 @@ Route::group(['middleware' => 'DisplayChinese'], function () {
 
         /*  report  */
         Route::post('createReport', 'ReportController@createReport');
+
+        /*  black  */
+        Route::post('createBlack', 'BlackController@createBlack');
+        Route::post('deleteBlack', 'BlackController@deleteBlack');
+        Route::get('getMyBlack', 'BlackController@getMyBlack');
+
     });
 });

@@ -78,6 +78,9 @@ class MessageService
         if ($CMCheck) {
             $sql = DB::table('messages')->where('chat_id', $messageData['chat_id'])
                 ->where('revoke', false)
+                ->whereNOTIn('messages.account', function ($query) use ($messageData) {
+                    $query->select('blacked_account')->from('blacks')->where('black_account','=', $messageData['account']);
+                })
                 ->select('messages.message_id', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'user.name', 'user.profile_pic')
                 ->join('user', 'messages.account', '=', 'user.account');
 
@@ -94,14 +97,14 @@ class MessageService
                 }
             }
             $this->baseService->setAllTime($dataList);
+
             $read = DB::table('chat_members')->where('chat_id', $messageData['chat_id'])
                 ->where('status', 2)
-                ->where('message_id', '<=',$dataList->first()->message_id)
-                ->where('message_id', '>=',$dataList->last()->message_id)
-                ->select( 'user.account','user.name', 'user.profile_pic','chat_members.message_id','chat_members.message_id')
+                ->where('message_id', '<=', $dataList->first()->message_id)
+                ->where('message_id', '>=', $dataList->last()->message_id)
+                ->select('user.account', 'user.name', 'user.profile_pic', 'chat_members.message_id', 'chat_members.message_id')
                 ->leftjoin('user', 'chat_members.account', '=', 'user.account')->get();
-            
-            $this->baseService->setRead($dataList,$read);
+            $this->baseService->setRead($dataList, $read);
 
             return $dataList;
         } else {
