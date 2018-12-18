@@ -87,10 +87,10 @@ class MessageService
             if (array_key_exists('message_id', $messageData)) {
                 $sql->where('message_id', '<', $messageData['message_id']);
                 $sql->orderBy('messages.message_id', 'desc');
-                $dataList = $sql->take(10)->get();
+                $dataList = $sql->take(30)->get();
             } else {
                 $sql->orderBy('messages.message_id', 'desc');
-                $dataList = $sql->take(10)->get();
+                $dataList = $sql->take(30)->get();
                 if (!$dataList->isEmpty()) {
                     $CMCheck->message_id = $dataList[0]->message_id;
                     $CMCheck->save();
