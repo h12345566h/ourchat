@@ -30,7 +30,7 @@ class UserController extends Controller
                     'required',
                     'between:6,20',
                     'regex:/^(([a-z]+[0-9]+)|([0-9]+[a-z]+))[a-z0-9]*$/i',
-                    'unique:user'
+                    'unique:users'
                 ],
                 'password' => [
                     'required',
