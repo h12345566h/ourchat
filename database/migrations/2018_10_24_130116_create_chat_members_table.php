@@ -21,11 +21,10 @@ class CreateChatMembersTable extends Migration
             $table->integer('status');
             $table->dateTime('created_at');
 
-            $table->foreign('message_id')->references('message_id')->on('messages');
             $table->unique(['account', 'chat_id']);
+            $table->foreign('message_id')->references('message_id')->on('messages');
             $table->foreign('account')->references('account')->on('user');
             $table->foreign('chat_id')->references('chat_id')->on('chats');
-
         });
     }
 
