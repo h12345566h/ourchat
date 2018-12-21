@@ -22,7 +22,7 @@ class CreateEchoTokensTable extends Migration
             $table->dateTime('created_at');
             $table->timestamp('last_use_time')->useCurrent();
 
-            $table->foreign('account')->references('account')->on('user');
+            $table->foreign('account')->references('account')->on('users');
         });
     }
 

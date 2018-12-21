@@ -22,7 +22,7 @@ class CreateMessagesTable extends Migration
             $table->boolean('revoke')->default(false);
             $table->dateTime('created_at');
 
-            $table->foreign('account')->references('account')->on('user');
+            $table->foreign('account')->references('account')->on('users');
             $table->foreign('chat_id')->references('chat_id')->on('chats');
         });
     }

@@ -19,7 +19,7 @@ class CreateChatsTable extends Migration
             $table->string('creator', 20);
             $table->dateTime('created_at');
             $table->string('profile_pic', 200)->nullable();
-            $table->foreign('creator')->references('account')->on('user');
+            $table->foreign('creator')->references('account')->on('users');
         });
     }
 

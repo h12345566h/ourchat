@@ -20,8 +20,8 @@ class CreateBlacksTable extends Migration
             $table->dateTime('created_at');
 
             $table->unique(['black_account', 'blacked_account']);
-            $table->foreign('black_account')->references('account')->on('user');
-            $table->foreign('blacked_account')->references('account')->on('user');
+            $table->foreign('black_account')->references('account')->on('users');
+            $table->foreign('blacked_account')->references('account')->on('users');
         });
     }
 
