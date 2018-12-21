@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: User
- * Date: 2018/12/17
- * Time: 13:06
- */
 
 namespace App\Services;
 
@@ -17,10 +11,10 @@ class BlackService
     public function createBlack($blackData)
     {
         if ($blackData['account'] != $blackData['blacked_account']) {
-            $User1Check = UserEloquent::where('account', $blackData['account']);
-            if ($User1Check) {
-                $User2Check = UserEloquent::where('account', $blackData['blacked_account']);
-                if ($User2Check) {
+            $user1Check = UserEloquent::where('account', $blackData['account']);
+            if ($user1Check) {
+                $user2Check = UserEloquent::where('account', $blackData['blacked_account']);
+                if ($user2Check) {
                     $BlackCheck = BlacksEloquent::where('black_account', $blackData['account'])
                         ->where('blacked_account', $blackData['blacked_account'])
                         ->first();
@@ -44,11 +38,11 @@ class BlackService
 
     public function deleteBlack($blackData)
     {
-        $BlackCheck = BlacksEloquent::where('black_account', $blackData['account'])
+        $blackCheck = BlacksEloquent::where('black_account', $blackData['account'])
             ->where('blacked_account', $blackData['blacked_account'])
             ->first();
-        if ($BlackCheck) {
-            $BlackCheck->delete();
+        if ($blackCheck) {
+            $blackCheck->delete();
             return '';
         } else {
             return '003錯誤';
@@ -57,9 +51,9 @@ class BlackService
 
     public function getMyBlack($account)
     {
-        $MyBlackList = DB::table('blacks')->where('black_account', $account)
+        $myBlackList = DB::table('blacks')->where('black_account', $account)
             ->leftjoin('users', 'blacks.blacked_account', '=', 'users.account')
             ->select('users.account', 'users.name', 'users.profile_pic')->get();
-        return $MyBlackList;
+        return $myBlackList;
     }
 }
