@@ -81,8 +81,8 @@ class MessageService
                 ->whereNOTIn('messages.account', function ($query) use ($messageData) {
                     $query->select('blacked_account')->from('blacks')->where('black_account','=', $messageData['account']);
                 })
-                ->select('messages.message_id', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'user.name', 'user.profile_pic')
-                ->join('user', 'messages.account', '=', 'user.account');
+                ->select('messages.message_id', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'users.name', 'users.profile_pic')
+                ->join('users', 'messages.account', '=', 'users.account');
 
             if (array_key_exists('message_id', $messageData)) {
                 $sql->where('message_id', '<', $messageData['message_id']);
@@ -102,8 +102,8 @@ class MessageService
                 ->where('status', 2)
                 ->where('message_id', '<=', $dataList->first()->message_id)
                 ->where('message_id', '>=', $dataList->last()->message_id)
-                ->select('user.account', 'user.name', 'user.profile_pic', 'chat_members.message_id', 'chat_members.message_id')
-                ->leftjoin('user', 'chat_members.account', '=', 'user.account')->get();
+                ->select('users.account', 'users.name', 'users.profile_pic', 'chat_members.message_id', 'chat_members.message_id')
+                ->leftjoin('users', 'chat_members.account', '=', 'users.account')->get();
             $this->baseService->setRead($dataList, $read);
 
             return $dataList;

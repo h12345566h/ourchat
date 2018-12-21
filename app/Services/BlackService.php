@@ -58,8 +58,8 @@ class BlackService
     public function getMyBlack($account)
     {
         $MyBlackList = DB::table('blacks')->where('black_account', $account)
-            ->leftjoin('user', 'blacks.blacked_account', '=', 'user.account')
-            ->select('user.account', 'user.name', 'user.profile_pic')->get();
+            ->leftjoin('users', 'blacks.blacked_account', '=', 'users.account')
+            ->select('users.account', 'users.name', 'users.profile_pic')->get();
         return $MyBlackList;
     }
 }

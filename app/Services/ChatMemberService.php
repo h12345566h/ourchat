@@ -75,14 +75,13 @@ class ChatMemberService
         $CMCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
             ->where('account', $chatMemberData['inv_account'])
             ->whereIn('status', array(0, 1))->first();
-//        return $CMCheck;
         if ($CMCheck) {
             if ($CMCheck->status == 0) {
                 //准許者check
-                $UserCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
+                $userCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
                     ->where('account', $chatMemberData['account'])
                     ->where('status', 2)->first();
-                if ($UserCheck) {
+                if ($userCheck) {
                     $CMCheck->status = 2;
                     $CMCheck->save();
                     return '';
@@ -112,10 +111,10 @@ class ChatMemberService
         if ($CMCheck) {
             if ($CMCheck->status == 0) {
                 //准許者check
-                $UserCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
+                $userCheck = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
                     ->where('account', $chatMemberData['account'])
                     ->where('status', 2)->first();
-                if ($UserCheck) {
+                if ($userCheck) {
                     $CMCheck->delete();
                     return '';
                 } else {
@@ -154,8 +153,8 @@ class ChatMemberService
         if ($CMCheck) {
             $CMList = DB::table('chat_members')->where('chat_members.chat_id', $chatMemberData['chat_id'])
                 ->where('chat_members.status', 2)
-                ->select('chat_members.*', 'user.name', 'user.profile_pic')
-                ->join('user', 'chat_members.account', '=', 'user.account')
+                ->select('chat_members.*', 'users.name', 'users.profile_pic')
+                ->join('users', 'chat_members.account', '=', 'users.account')
                 ->orderBy('chat_members.cm_id', 'desc')
                 ->get();
 
@@ -176,8 +175,8 @@ class ChatMemberService
         if ($CMCheck) {
             $CMList = DB::table('chat_members')->where('chat_id', $chatMemberData['chat_id'])
                 ->where('status', 0)
-                ->select('chat_members.account', 'chat_members.created_at', 'user.name', 'user.profile_pic')
-                ->join('user', 'user.account', '=', 'chat_members.account')
+                ->select('chat_members.account', 'chat_members.created_at', 'users.name', 'users.profile_pic')
+                ->join('users', 'users.account', '=', 'chat_members.account')
                 ->orderBy('chat_members.created_at', 'desc')
                 ->get();
             $baseService = new BaseService();
@@ -200,10 +199,10 @@ class ChatMemberService
 
     public function getMyChat($account)
     {
-        $dataList = DB::select("select chats.chat_id, chats.chat_name, chats.profile_pic as chat_profile_pic, messages.message_id, messages.account, messages.content, messages.type, messages.created_at, user.name, user.profile_pic as user_profile_pic, chat_members.status from chats " .
+        $dataList = DB::select("select chats.chat_id, chats.chat_name, chats.profile_pic as chat_profile_pic, messages.message_id, messages.account, messages.content, messages.type, messages.created_at, users.name, users.profile_pic as user_profile_pic, chat_members.status from chats " .
             "left join chat_members on chat_members.account = '$account' and chat_members.chat_id = chats.chat_id " .
             "left join messages on messages.message_id = (select message_id from messages where messages.chat_id = chats.chat_id and messages.revoke = false order by created_at desc limit 1) and chat_members.status = 2 " .
-            "left join user on messages.account = user.account " .
+            "left join users on messages.account = users.account " .
             "where chats.chat_id in (select chat_id from chat_members where account = '$account') " .
             "order by messages.created_at desc");
         $baseService = new BaseService();

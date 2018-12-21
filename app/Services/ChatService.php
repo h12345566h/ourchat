@@ -16,15 +16,15 @@ class ChatService
         $chat = DB::table('chats')->where('chats.chat_id', $chatId)
             ->select('chats.chat_id', 'chats.chat_name', 'chats.profile_pic as chat_profile_pic', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'user.name', 'user.profile_pic as user_profile_pic')
             ->leftJoin('messages', 'messages.message_id', '=', DB::raw('(select message_id from messages where messages.chat_id = chats.chat_id order by created_at desc limit 1)'))
-            ->leftJoin('user', 'messages.account','=','user.account')
+            ->leftJoin('users', 'messages.account','=','users.account')
             ->first();
         return $chat;
     }
 
     public function createChat($chatData)
     {
-        $UserCheck = UserEloquent::find($chatData['account']);
-        if ($UserCheck) {
+        $userCheck = UserEloquent::find($chatData['account']);
+        if ($userCheck) {
             $ChatCheck = ChatEloquent::where('creator', $chatData['account'])
                 ->where('chat_name', $chatData['chat_name'])->first();
             if ($ChatCheck) {
@@ -50,7 +50,7 @@ class ChatService
 
         $dataList = DB::table('chats')->where('chats.chat_name', 'like', $keyword)
             ->select('chats.chat_id', 'chats.chat_name', 'chats.created_at', 'chats.creator', 'chats.profile_pic as chat_profile_pic', 'user.name as creator_name', 'user.profile_pic as creator_profile_pic', 'chat_members.status')
-            ->join('user', 'chats.creator', '=', 'user.account')
+            ->join('users', 'chats.creator', '=', 'users.account')
             ->leftJoin('chat_members', function ($join) use ($chatData) {
                 $join->on('chat_members.chat_id', '=', 'chats.chat_id')
                     ->where('chat_members.account', '=', $chatData['account']);
