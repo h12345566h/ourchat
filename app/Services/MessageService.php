@@ -79,7 +79,8 @@ class MessageService
             $sql = DB::table('messages')->where('chat_id', $messageData['chat_id'])
                 ->where('revoke', false)
                 ->whereNOTIn('messages.account', function ($query) use ($messageData) {
-                    $query->select('blacked_account')->from('blacks')->where('black_account','=', $messageData['account']);
+                    $blackSQL = "select blacked_account from blacks where black_account = '" . $messageData['account'] . "' union select black_account from blacks where blacked_account = '" . $messageData['account'] . "'";
+                    $query->select($blackSQL);
                 })
                 ->select('messages.message_id', 'messages.content', 'messages.type', 'messages.account', 'messages.created_at', 'users.name', 'users.profile_pic')
                 ->join('users', 'messages.account', '=', 'users.account');

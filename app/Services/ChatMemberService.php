@@ -199,9 +199,10 @@ class ChatMemberService
 
     public function getMyChat($account)
     {
+        $blackSQL = "messages.account not in (select blacked_account from blacks where black_account = '$account' union select black_account from blacks where blacked_account = '$account')";
         $dataList = DB::select("select chats.chat_id, chats.chat_name, chats.profile_pic as chat_profile_pic, messages.message_id, messages.account, messages.content, messages.type, messages.created_at, users.name, users.profile_pic as user_profile_pic, chat_members.status from chats " .
             "left join chat_members on chat_members.account = '$account' and chat_members.chat_id = chats.chat_id " .
-            "left join messages on messages.message_id = (select message_id from messages where messages.chat_id = chats.chat_id and messages.account not in (select blacked_account from blacks where black_account = '$account') and messages.revoke = false order by created_at desc limit 1) and chat_members.status = 2 " .
+            "left join messages on messages.message_id = (select message_id from messages where messages.chat_id = chats.chat_id and $blackSQL and messages.revoke = false order by created_at desc limit 1) and chat_members.status = 2 " .
             "left join users on messages.account = users.account " .
             "where chats.chat_id in (select chat_id from chat_members where account = '$account') " .
             "order by messages.created_at desc");
