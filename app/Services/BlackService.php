@@ -11,6 +11,7 @@ namespace App\Services;
 use App\User as UserEloquent;
 use App\Blacks as BlacksEloquent;
 use DB;
+
 class BlackService
 {
     public function createBlack($blackData)
@@ -56,7 +57,7 @@ class BlackService
 
     public function getMyBlack($account)
     {
-        $MyBlackList = DB::table('blacks')->where('black_account',$account)
+        $MyBlackList = DB::table('blacks')->where('black_account', $account)
             ->leftjoin('user', 'blacks.blacked_account', '=', 'user.account')
             ->select('user.account', 'user.name', 'user.profile_pic')->get();
         return $MyBlackList;
