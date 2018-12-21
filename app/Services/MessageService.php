@@ -38,6 +38,10 @@ class MessageService
                 //推撥
                 $getUser = ChatMemberEloquent::where('chat_id', $message->chat_id)
                     ->where('status', 2)
+                    ->whereNOTIn('account', function ($query) use ($messageData) {
+                        $blackSQL = "blacked_account from blacks where black_account = '" . $messageData['account'] . "' union select black_account from blacks where blacked_account = '" . $messageData['account'] . "'";
+                        $query->select(DB::raw($blackSQL));
+                    })
                     ->select('account')->get();
                 $plucked = $getUser->pluck('account')->toarray();
 
