@@ -49,7 +49,7 @@ class ChatService
         $keyword = '%' . $chatData['keyword'] . '%';
 
         $dataList = DB::table('chats')->where('chats.chat_name', 'like', $keyword)
-            ->select('chats.chat_id', 'chats.chat_name', 'chats.created_at', 'chats.creator', 'chats.profile_pic as chat_profile_pic', 'user.name as creator_name', 'user.profile_pic as creator_profile_pic', 'chat_members.status')
+            ->select('chats.chat_id', 'chats.chat_name', 'chats.created_at', 'chats.creator', 'chats.profile_pic as chat_profile_pic', 'users.name as creator_name', 'users.profile_pic as creator_profile_pic', 'chat_members.status')
             ->join('users', 'chats.creator', '=', 'users.account')
             ->leftJoin('chat_members', function ($join) use ($chatData) {
                 $join->on('chat_members.chat_id', '=', 'chats.chat_id')
