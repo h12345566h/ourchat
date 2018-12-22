@@ -64,7 +64,7 @@ class MessageService
                 else
                     $content = $message->content;
                 $notice['simple'] = $userData->name . ' 在 ' . $chatData->chat_name . '：' . $content;
-                $notice['type'] = "message";
+                $notice['push_type'] = "message";
                 //需做一些處理
                 $resData = $this->echoTokenService->echo($notice);
                 return $push_data;
@@ -144,7 +144,7 @@ class MessageService
 
             $notice['push_data'] = $push_data;
             $notice['simple'] = "";
-            $notice['type'] = "revoke";
+            $notice['push_type'] = "revoke";
             //需做一些處理
             $resData = $this->echoTokenService->echo($notice);
             return "";

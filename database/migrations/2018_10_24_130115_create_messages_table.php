@@ -18,6 +18,7 @@ class CreateMessagesTable extends Migration
             $table->unsignedInteger('chat_id');
             $table->string('account', 20);
             $table->string('content', 3000);
+            //文字:1 圖片:2
             $table->unsignedInteger('type');
             $table->boolean('revoke')->default(false);
             $table->dateTime('created_at');
