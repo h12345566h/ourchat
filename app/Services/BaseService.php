@@ -39,14 +39,15 @@ class BaseService
 
         return $resStr;
     }
-    public function setRead($datalist,$readlist)
+
+    public function setRead($dataList, $readList)
     {
-        foreach ($datalist as $item_A) {
-            $item_A->readlist=array();
-            foreach ($readlist as $item_B) {
-              if($item_B->message_id ==$item_A->message_id){
-                  array_push($item_A->readlist,$item_B);
-              }
+        foreach ($dataList as $item_A) {
+            $item_A->readlist = array();
+            foreach ($readList as $item_B) {
+                if ($item_B->message_id == $item_A->message_id) {
+                    array_push($item_A->readlist, $item_B);
+                }
             }
         }
     }

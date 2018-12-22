@@ -103,12 +103,14 @@ class MessageService
             }
             $this->baseService->setAllTime($dataList);
 
-            $read = DB::table('chat_members')->where('chat_id', $messageData['chat_id'])
-                ->where('status', 2)
-                ->where('message_id', '<=', $dataList->first()->message_id)
-                ->where('message_id', '>=', $dataList->last()->message_id)
-                ->select('users.account', 'users.name', 'users.profile_pic', 'chat_members.message_id', 'chat_members.message_id')
-                ->leftjoin('users', 'chat_members.account', '=', 'users.account')->get();
+            $read = [];
+            if (!$dataList->isEmpty())
+                $read = DB::table('chat_members')->where('chat_id', $messageData['chat_id'])
+                    ->where('status', 2)
+                    ->where('message_id', '<=', $dataList->first()->message_id)
+                    ->where('message_id', '>=', $dataList->last()->message_id)
+                    ->select('users.account', 'users.name', 'users.profile_pic', 'chat_members.message_id', 'chat_members.message_id')
+                    ->leftjoin('users', 'chat_members.account', '=', 'users.account')->get();
             $this->baseService->setRead($dataList, $read);
 
             return $dataList;
