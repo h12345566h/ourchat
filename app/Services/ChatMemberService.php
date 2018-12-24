@@ -135,8 +135,7 @@ class ChatMemberService
     public function quitChat($chatMemberData)
     {
         $del_CM = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])
-            ->where('account', $chatMemberData['account'])
-            ->where('status', 2)->first();
+            ->where('account', $chatMemberData['account'])->first();
         if ($del_CM) {
             $del_CM->delete();
             return '';
