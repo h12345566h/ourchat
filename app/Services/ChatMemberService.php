@@ -204,7 +204,7 @@ class ChatMemberService
             "left join messages on messages.message_id = (select message_id from messages where messages.chat_id = chats.chat_id and $blackSQL and messages.revoke = false order by created_at desc limit 1) and chat_members.status = 2 " .
             "left join users on messages.account = users.account " .
             "where chats.chat_id in (select chat_id from chat_members where account = '$account') " .
-            "order by messages.created_at desc");
+            "order by messages.created_at desc, chats.chat_id desc");
         $baseService = new BaseService();
         $baseService->setAllTime($dataList);
         return $dataList;
