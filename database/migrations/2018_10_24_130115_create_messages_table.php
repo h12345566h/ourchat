@@ -24,7 +24,7 @@ class CreateMessagesTable extends Migration
             $table->dateTime('created_at');
 
             $table->foreign('account')->references('account')->on('users');
-            $table->foreign('chat_id')->references('chat_id')->on('chats');
+            $table->foreign('chat_id')->references('chat_id')->on('chats')->onDelete('cascade');
         });
     }
 

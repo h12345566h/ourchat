@@ -22,9 +22,8 @@ class CreateChatMembersTable extends Migration
             $table->dateTime('created_at');
 
             $table->unique(['account', 'chat_id']);
-            $table->foreign('message_id')->references('message_id')->on('messages');
             $table->foreign('account')->references('account')->on('users');
-            $table->foreign('chat_id')->references('chat_id')->on('chats');
+            $table->foreign('chat_id')->references('chat_id')->on('chats')->onDelete('cascade');
         });
     }
 

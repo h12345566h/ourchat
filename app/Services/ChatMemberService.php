@@ -138,6 +138,16 @@ class ChatMemberService
             ->where('account', $chatMemberData['account'])->first();
         if ($del_CM) {
             $del_CM->delete();
+            $CMCount = ChatMemberEloquent::where('chat_id', $chatMemberData['chat_id'])->get();
+            if (count($CMCount) < 1) {
+                $del_Chat = ChatEloquent::find($chatMemberData['chat_id']);
+                if ($del_Chat) {
+                    $del_Chat->delete();
+                    return '';
+                } else {
+                    return '001錯誤';
+                }
+            }
             return '';
         } else {
             return '您不屬於此聊天室';
