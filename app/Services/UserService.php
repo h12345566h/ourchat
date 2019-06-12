@@ -66,10 +66,13 @@ class UserService
         if (strlen($newFileName) > 200)
             return '0';
         $image = Image::make($file);
+        //原圖
+        $image->save('images/profile_pic/OriginalImage/' . $newFileName);
+        //縮圖
         $image->resize(350, null, function ($constraint) {
             $constraint->aspectRatio();
             $constraint->upsize();
-        })->save('images/profile_pic/' . $newFileName);
+        })->save('images/profile_pic/Thumbnail/' . $newFileName);
         $user = UserEloquent::find($account);
         if ($user->profile_pic) {
             if (file_exists('images/profile_pic/' . $user->profile_pic)) {
