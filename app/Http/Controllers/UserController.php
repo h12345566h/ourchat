@@ -185,7 +185,7 @@ class UserController extends Controller
                 'profile_pic' => 'required|mimes:jpeg,bmp,png'
             ],
             [
-                'mimes' => '圖檔格式錯誤(副檔名須為jpg ,jpeg, png, bmp)',
+                'mimes' => '圖檔格式錯誤(副檔名須為jpg, jpeg, png, bmp)',
                 'required' => '請上傳圖片'
             ]
         );

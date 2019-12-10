@@ -72,13 +72,14 @@ class ChatService
             if (strlen($newFileName) > 200)
                 return '0';
             $image = Image::make($file);
-            //原圖
-            $image->save('images/ChatProfilePic/OriginalImage/' . $newFileName);
-            //縮圖
-            $image->resize(350, null, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            })->save('images/ChatProfilePic/Thumbnail/' . $newFileName);
+            $image->save('images/ChatProfilePic/' . $newFileName);
+//            //原圖
+//            $image->save('images/ChatProfilePic/OriginalImage/' . $newFileName);
+//            //縮圖
+//            $image->resize(350, null, function ($constraint) {
+//                $constraint->aspectRatio();
+//                $constraint->upsize();
+//            })->save('images/ChatProfilePic/Thumbnail/' . $newFileName);
             $Chat = ChatEloquent::find($chat_id);
             if ($Chat->profile_pic) {
                 if (file_exists('images/ChatProfilePic/' . $Chat->profile_pic)) {
